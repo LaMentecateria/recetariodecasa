@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Roderic e Imane</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #333;
+            --accent: #000;
+            --grey: #999;
+            --light-grey: #f4f4f4;
+        }
+
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        
+        header { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding: 60px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand-container { cursor: pointer; }
+        
+        header h1 { 
+            font-size: 32px; 
+            font-weight: 200; 
+            letter-spacing: -1px; 
+            margin: 0;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            color: var(--grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Estilo del buscador */
+        .search-container { position: relative; }
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            width: 200px;
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            width: 250px;
+            border-color: var(--accent);
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+        /* VISTA: CUADRÍCULA */
+        .recipe-grid-home { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding-bottom: 60px; }
+        .recipe-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: #fff; }
+        .recipe-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        
+        .recipe-card-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid #eee; }
+        .recipe-card-info { padding: 20px; }
+        .recipe-card-info h2 { font-size: 20px; margin: 0 0 10px; color: #111; }
+        .recipe-card-info .meta { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* VISTA: DETALLE */
+        #recipe-detail { display: none; padding-bottom: 100px; }
+        .back-btn { background: none; border: 1px solid #ddd; padding: 8px 15px; cursor: pointer; font-size: 12px; text-transform: uppercase; margin-bottom: 40px; }
+        .back-btn:hover { background: #000; color: #fff; }
+
+        .detail-header h2 { font-size: 42px; font-weight: 700; margin: 0 0 10px; letter-spacing: -1px; }
+        .detail-meta { font-size: 13px; color: var(--grey); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; }
+        
+        .video-box { position: relative; padding-bottom: 56.25%; height: 0; background: #000; margin-bottom: 50px; }
+        .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        .content-split { display: flex; flex-wrap: wrap; gap: 60px; }
+        .ingredients { flex: 0 0 240px; }
+        .instructions { flex: 1 1 300px; }
+
+        h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #ccc; margin-bottom: 25px; }
+        ul, ol { padding: 0; list-style: none; margin: 0; }
+        .ingredients li { font-size: 16px; padding: 10px 0; border-bottom: 1px solid #f2f2f2; }
+        
+        ol { counter-reset: steps; }
+        ol li { position: relative; padding-left: 45px; margin-bottom: 30px; font-size: 18px; line-height: 1.6; }
+        ol li::before { 
+            content: counter(steps); counter-increment: steps;
+            position: absolute; left: 0; top: 4px;
+            width: 24px; height: 24px; background: #000; color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: bold;
+        }
+
+        @media (max-width: 600px) { 
+            .content-split { flex-direction: column; } 
+            header { text-align: center; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand-container" onclick="showHome()">
+        <h1>Casa Roderic e Imane</h1>
+        <p>Nuestra historia a fuego lento</p>
+    </div>
+    <div class="search-container" id="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar ingrediente o receta..." onkeyup="filterRecipes()">
+    </div>
+</header>
+
+<div class="container">
+    <div id="home-view" class="recipe-grid-home"></div>
+    <div id="recipe-detail">
+        <button class="back-btn" onclick="showHome()">← Volver al recetario</button>
+        <div id="detail-content"></div>
+    </div>
+</div>
+
+<script>
+    // Tu base de datos de recetas
+    const recetas = [
+        {
+            "id": 0,
+            "titulo": "Coca de pimentó i tomaco",
+            "meta": "190 min / 6 personas",
+            "imagen": "images/cocapimentotomaco.png",
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos y verdes", "Tomates", "Piñones"],
+            "pasos": ["Mezclar la masa y dejar reposar.", "Añadir el pimentó y tomaco picados.", "Hornear hasta que esté dorada."]
+        },
+        {
+            "id": 1,
+            "titulo": "Tortilla de patatas con cebolla",
+            "meta": "30 min / 2 personas",
+            "imagen": "images/tortillapatatacebolla.png",
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "ingredientes": ["500g Patatas", "5 Huevos camperos", "1 Cebolla blanca", "Aceite de oliva"],
+            "pasos": ["Cortar y freír la patata con la cebolla.", "Batir los huevos y mezclar.", "Cuajar en la sartén al gusto."]
+        }
+    ];
+
+    function showHome() {
+        document.getElementById('home-view').style.display = 'grid';
+        document.getElementById('recipe-detail').style.display = 'none';
+        document.getElementById('search-box').style.display = 'block';
+        renderHome(recetas);
+    }
+
+    function renderHome(listaRecetas) {
+        const homeView = document.getElementById('home-view');
+        homeView.innerHTML = listaRecetas.map(r => `
+            <div class="recipe-card" onclick="showRecipe(${r.id})">
+                <img src="${r.imagen}" class="recipe-card-img" alt="${r.titulo}">
+                <div class="recipe-card-info">
+                    <div class="meta">${r.meta}</div>
+                    <h2>${r.titulo}</h2>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterRecipes() {
+        const text = document.getElementById('searchInput').value.toLowerCase();
+        const filtradas = recetas.filter(r => 
+            r.titulo.toLowerCase().includes(text) || 
+            r.ingredientes.some(i => i.toLowerCase().includes(text))
+        );
+        renderHome(filtradas);
+    }
+
+    function showRecipe(id) {
+        const recipe = recetas.find(r => r.id === id);
+        const detailView = document.getElementById('recipe-detail');
+        const homeView = document.getElementById('home-view');
+        const searchBox = document.getElementById('search-box');
+        const content = document.getElementById('detail-content');
+
+        homeView.style.display = 'none';
+        searchBox.style.display = 'none';
+        detailView.style.display = 'block';
+
+        content.innerHTML = `
+            <div class="detail-header">
+                <h2>${recipe.titulo}</h2>
+                <div class="detail-meta">${recipe.meta}</div>
+            </div>
+            <div class="video-box">
+                <iframe src="${recipe.video}" allowfullscreen></iframe>
+            </div>
+            <div class="content-split">
+                <div class="ingredients">
+                    <h3>Ingredientes</h3>
+                    <ul>${recipe.ingredientes.map(i => `<li>${i}</li>`).join('')}</ul>
+                </div>
+                <div class="instructions">
+                    <h3>Preparación</h3>
+                    <ol>${recipe.pasos.map(p => `<li>${p}</li>`).join('')}</ol>
+                </div>
+            </div>
+        `;
+        window.scrollTo(0,0);
+    }
+
+    renderHome(recetas);
+</script>
+
+</body>
+</html>
