@@ -30,21 +30,19 @@
         header h1 { font-size: 32px; font-weight: 200; letter-spacing: -1px; margin: 0; }
         header p { margin: 5px 0 0 0; font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Estilo del buscador mejorado */
         .search-container { position: relative; }
         .search-input {
             padding: 10px 15px;
             border: 1px solid #ddd;
             border-radius: 20px;
-            font-size: 16px; /* Crucial: 16px evita el zoom automático en iPhone/Android */
+            font-size: 16px; 
             outline: none;
             width: 200px;
             transition: all 0.3s;
-            -webkit-appearance: none; /* Evita estilos nativos en móviles */
+            -webkit-appearance: none;
         }
         .search-input:focus { width: 250px; border-color: var(--accent); }
 
-        /* Lista de sugerencias bajo el buscador */
         .search-results-list {
             position: absolute;
             top: 100%;
@@ -57,7 +55,7 @@
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             z-index: 100;
-            display: none; /* Se activa por JS */
+            display: none;
             margin-top: 5px;
         }
         .search-item {
@@ -75,7 +73,6 @@
 
         .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
 
-        /* VISTA: CUADRÍCULA */
         .recipe-grid-home { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding-bottom: 60px; }
         .recipe-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: #fff; }
         .recipe-card:hover { transform: translateY(-5px); border-color: var(--accent); }
@@ -85,7 +82,6 @@
         .recipe-card-info h2 { font-size: 20px; margin: 0 0 10px; color: #111; }
         .recipe-card-info .meta { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* VISTA: DETALLE */
         #recipe-detail { display: none; padding-bottom: 100px; }
         .back-btn { background: none; border: 1px solid #ddd; padding: 8px 15px; cursor: pointer; font-size: 12px; text-transform: uppercase; margin-bottom: 40px; }
         .back-btn:hover { background: #000; color: #fff; }
@@ -112,6 +108,16 @@
             width: 24px; height: 24px; background: #000; color: #fff;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 11px; font-weight: bold;
+        }
+
+        /* Estilo para las imágenes dentro de los pasos */
+        .step-img {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 8px;
+            margin: 15px 0 10px 0;
+            display: block;
+            border: 1px solid #eee;
         }
 
         @media (max-width: 600px) { 
@@ -144,10 +150,56 @@
 
 <script>
     const recetas = [
-        { "id": 0, "titulo": "Coca de pimentó i tomaco", "meta": "190 min / 6 personas", "imagen": "images/cocapimentotomaco.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos", "Tomates", "Piñones"], "pasos": ["Mezclar masa", "Añadir verduras", "Hornear"] },
-        { "id": 1, "titulo": "Tortilla de patatas con cebolla", "meta": "30 min / 2 personas", "imagen": "images/tortillapatatacebolla.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["500g Patatas", "5 Huevos camperos", "1 Cebolla blanca", "Aceite"], "pasos": ["Freír patata", "Mezclar huevo", "Cuajar"] },
-        { "id": 3, "titulo": "Tajín de muslo de pollo", "meta": "60 min / 2 personas", "imagen": "images/tajin.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["Pollo", "Limón encurtido", "Olivas", "Especias"], "pasos": ["Sellar pollo", "Cocción lenta tajín"] },
-        { "id": 4, "titulo": "Cassola", "meta": "60 min / 2 personas", "imagen": "images/cassola.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["Arroz", "Costillas", "Garbanzos", "Morcilla"], "pasos": ["Sofreír carne", "Hornear con arroz"] }
+        { 
+            "id": 0, 
+            "titulo": "Coca de pimentó i tomaco", 
+            "meta": "190 min / 6 personas", 
+            "imagen": "images/cocapimentotomaco.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos", "Tomates", "Piñones"], 
+            "pasos": [
+                { "texto": "Mezclar masa y dejar reposar.", "foto": "" },
+                { "texto": "Añadir verduras troceadas.", "foto": "" },
+                { "texto": "Hornear hasta que esté dorada.", "foto": "images/cocapimentotomaco.png" }
+            ] 
+        },
+        { 
+            "id": 1, 
+            "titulo": "Tortilla de patatas con cebolla", 
+            "meta": "30 min / 2 personas", 
+            "imagen": "images/tortillapatatacebolla.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": ["500g Patatas", "5 Huevos camperos", "1 Cebolla blanca", "Aceite"], 
+            "pasos": [
+                { "texto": "Freír la patata y la cebolla a fuego lento.", "foto": "" },
+                { "texto": "Mezclar con el huevo batido.", "foto": "" },
+                { "texto": "Cuajar en la sartén por ambos lados.", "foto": "" }
+            ] 
+        },
+        { 
+            "id": 3, 
+            "titulo": "Tajín de muslo de pollo", 
+            "meta": "60 min / 2 personas", 
+            "imagen": "images/tajin.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": ["Pollo", "Limón encurtido", "Olivas", "Especias"], 
+            "pasos": [
+                { "texto": "Sellar el pollo con las especias.", "foto": "" },
+                { "texto": "Cocción lenta en el tajín con el limón y olivas.", "foto": "" }
+            ] 
+        },
+        { 
+            "id": 4, 
+            "titulo": "Cassola", 
+            "meta": "60 min / 2 personas", 
+            "imagen": "images/cassola.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": ["Arroz", "Costillas", "Garbanzos", "Morcilla"], 
+            "pasos": [
+                { "texto": "Sofreír la carne y embutidos.", "foto": "" },
+                { "texto": "Añadir el arroz y el caldo para hornear.", "foto": "" }
+            ] 
+        }
     ];
 
     function showHome() {
@@ -188,7 +240,6 @@
             r.ingredientes.some(i => i.toLowerCase().includes(text))
         );
 
-        // Mostrar lista de resultados bajo el buscador
         if (filtradas.length > 0) {
             resultsContainer.style.display = 'block';
             resultsContainer.innerHTML = filtradas.map(r => `
@@ -232,14 +283,20 @@
                 </div>
                 <div class="instructions">
                     <h3>Preparación</h3>
-                    <ol>${recipe.pasos.map(p => `<li>${p}</li>`).join('')}</ol>
+                    <ol>
+                        ${recipe.pasos.map(p => `
+                            <li>
+                                ${p.texto}
+                                ${p.foto ? `<img src="${p.foto}" class="step-img" alt="Paso detallado">` : ''}
+                            </li>
+                        `).join('')}
+                    </ol>
                 </div>
             </div>
         `;
         window.scrollTo(0,0);
     }
 
-    // Cerrar lista de resultados si se pulsa fuera
     document.addEventListener('click', function(e) {
         if (!document.getElementById('search-box').contains(e.target)) {
             document.getElementById('quick-results').style.display = 'none';
