@@ -27,37 +27,51 @@
         }
 
         .brand-container { cursor: pointer; }
-        
-        header h1 { 
-            font-size: 32px; 
-            font-weight: 200; 
-            letter-spacing: -1px; 
-            margin: 0;
-        }
+        header h1 { font-size: 32px; font-weight: 200; letter-spacing: -1px; margin: 0; }
+        header p { margin: 5px 0 0 0; font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 2px; }
 
-        header p {
-            margin: 5px 0 0 0;
-            font-size: 12px;
-            color: var(--grey);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Estilo del buscador */
+        /* Estilo del buscador mejorado */
         .search-container { position: relative; }
         .search-input {
             padding: 10px 15px;
             border: 1px solid #ddd;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 16px; /* Crucial: 16px evita el zoom automático en iPhone/Android */
             outline: none;
             width: 200px;
             transition: all 0.3s;
+            -webkit-appearance: none; /* Evita estilos nativos en móviles */
         }
-        .search-input:focus {
+        .search-input:focus { width: 250px; border-color: var(--accent); }
+
+        /* Lista de sugerencias bajo el buscador */
+        .search-results-list {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
             width: 250px;
-            border-color: var(--accent);
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none; /* Se activa por JS */
+            margin-top: 5px;
         }
+        .search-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f9f9f9;
+            cursor: pointer;
+            font-size: 14px;
+            display: block;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .search-item:last-child { border-bottom: none; }
+        .search-item:hover { background: var(--light-grey); }
+        .search-item strong { display: block; color: var(--accent); }
 
         .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
 
@@ -102,7 +116,8 @@
 
         @media (max-width: 600px) { 
             .content-split { flex-direction: column; } 
-            header { text-align: center; justify-content: center; }
+            header { text-align: center; justify-content: center; padding: 40px 20px; }
+            .search-results-list { width: calc(100vw - 40px); right: -10px; left: -10px; margin: 5px auto; }
         }
     </style>
 </head>
@@ -114,7 +129,8 @@
         <p>Nuestra historia a fuego lento</p>
     </div>
     <div class="search-container" id="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="Buscar ingrediente o receta..." onkeyup="filterRecipes()">
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar ingrediente o receta..." onkeyup="filterRecipes()" autocomplete="off">
+        <div id="quick-results" class="search-results-list"></div>
     </div>
 </header>
 
@@ -127,50 +143,19 @@
 </div>
 
 <script>
-    // Tu base de datos de recetas
     const recetas = [
-        {
-            "id": 0,
-            "titulo": "Coca de pimentó i tomaco",
-            "meta": "190 min / 6 personas",
-            "imagen": "images/cocapimentotomaco.png",
-            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-            "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos y verdes", "Tomates", "Piñones"],
-            "pasos": ["Mezclar la masa y dejar reposar.", "Añadir el pimentó y tomaco picados.", "Hornear hasta que esté dorada."]
-        },
-        {
-            "id": 1,
-            "titulo": "Tortilla de patatas con cebolla",
-            "meta": "30 min / 2 personas",
-            "imagen": "images/tortillapatatacebolla.png",
-            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-            "ingredientes": ["500g Patatas", "5 Huevos camperos", "1 Cebolla blanca", "Aceite de oliva"],
-            "pasos": ["Cortar y freír la patata con la cebolla.", "Batir los huevos y mezclar.", "Cuajar en la sartén al gusto."]
-        },
-        {
-            "id": 3,
-            "titulo": "Tajín de muslo de pollo",
-            "meta": "60 min / 2 personas",
-            "imagen": "images/tajin.png",
-            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-            "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos y verdes", "Tomates", "Piñones"],
-            "pasos": ["Mezclar la masa y dejar reposar.", "Añadir el pimentó y tomaco picados.", "Hornear hasta que esté dorada."]
-        },
-        {
-            "id": 3,
-            "titulo": "Cassola",
-            "meta": "60 min / 2 personas",
-            "imagen": "images/cassola.png",
-            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-            "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos y verdes", "Tomates", "Piñones"],
-            "pasos": ["Mezclar la masa y dejar reposar.", "Añadir el pimentó y tomaco picados.", "Hornear hasta que esté dorada."]
-        }
+        { "id": 0, "titulo": "Coca de pimentó i tomaco", "meta": "190 min / 6 personas", "imagen": "images/cocapimentotomaco.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["750g de harina de trigo", "1 vaso de cerveza", "15g de levadura fresca", "Pimientos rojos", "Tomates", "Piñones"], "pasos": ["Mezclar masa", "Añadir verduras", "Hornear"] },
+        { "id": 1, "titulo": "Tortilla de patatas con cebolla", "meta": "30 min / 2 personas", "imagen": "images/tortillapatatacebolla.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["500g Patatas", "5 Huevos camperos", "1 Cebolla blanca", "Aceite"], "pasos": ["Freír patata", "Mezclar huevo", "Cuajar"] },
+        { "id": 3, "titulo": "Tajín de muslo de pollo", "meta": "60 min / 2 personas", "imagen": "images/tajin.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["Pollo", "Limón encurtido", "Olivas", "Especias"], "pasos": ["Sellar pollo", "Cocción lenta tajín"] },
+        { "id": 4, "titulo": "Cassola", "meta": "60 min / 2 personas", "imagen": "images/cassola.png", "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", "ingredientes": ["Arroz", "Costillas", "Garbanzos", "Morcilla"], "pasos": ["Sofreír carne", "Hornear con arroz"] }
     ];
 
     function showHome() {
         document.getElementById('home-view').style.display = 'grid';
         document.getElementById('recipe-detail').style.display = 'none';
         document.getElementById('search-box').style.display = 'block';
+        document.getElementById('quick-results').style.display = 'none';
+        document.getElementById('searchInput').value = '';
         renderHome(recetas);
     }
 
@@ -188,11 +173,34 @@
     }
 
     function filterRecipes() {
-        const text = document.getElementById('searchInput').value.toLowerCase();
+        const input = document.getElementById('searchInput');
+        const text = input.value.toLowerCase();
+        const resultsContainer = document.getElementById('quick-results');
+        
+        if (text.length < 2) {
+            resultsContainer.style.display = 'none';
+            renderHome(recetas);
+            return;
+        }
+
         const filtradas = recetas.filter(r => 
             r.titulo.toLowerCase().includes(text) || 
             r.ingredientes.some(i => i.toLowerCase().includes(text))
         );
+
+        // Mostrar lista de resultados bajo el buscador
+        if (filtradas.length > 0) {
+            resultsContainer.style.display = 'block';
+            resultsContainer.innerHTML = filtradas.map(r => `
+                <div class="search-item" onclick="showRecipe(${r.id})">
+                    <strong>${r.titulo}</strong>
+                    <span style="font-size:11px; color:#999">${r.meta}</span>
+                </div>
+            `).join('');
+        } else {
+            resultsContainer.innerHTML = '<div class="search-item">No hay resultados</div>';
+        }
+
         renderHome(filtradas);
     }
 
@@ -202,7 +210,9 @@
         const homeView = document.getElementById('home-view');
         const searchBox = document.getElementById('search-box');
         const content = document.getElementById('detail-content');
+        const resultsContainer = document.getElementById('quick-results');
 
+        resultsContainer.style.display = 'none';
         homeView.style.display = 'none';
         searchBox.style.display = 'none';
         detailView.style.display = 'block';
@@ -229,8 +239,14 @@
         window.scrollTo(0,0);
     }
 
+    // Cerrar lista de resultados si se pulsa fuera
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('search-box').contains(e.target)) {
+            document.getElementById('quick-results').style.display = 'none';
+        }
+    });
+
     renderHome(recetas);
 </script>
-
 </body>
 </html>
