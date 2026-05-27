@@ -72,15 +72,23 @@
         .search-item:hover { background: var(--light-grey); }
         .search-item strong { display: block; color: var(--accent); }
 
-        /* Contenedor de Categorías */
+        /* Contenedor de Categorías con Scroll Lateral Eficiente */
         .categories-container {
             max-width: 1000px;
             margin: 0 auto 40px auto;
             padding: 0 20px;
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+            -webkit-overflow-scrolling: touch; 
         }
+        
+        .categories-container::-webkit-scrollbar {
+            display: none;
+        }
+
         .category-btn {
             background: none;
             border: 1px solid #eee;
@@ -90,6 +98,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #666;
+            white-space: nowrap; 
         }
         .category-btn:hover {
             border-color: var(--accent);
@@ -111,16 +120,34 @@
         .recipe-card-info { padding: 20px; }
         .recipe-card-info h2 { font-size: 20px; margin: 0 0 10px; color: #111; }
         .recipe-card-info .meta { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
-        .recipe-card-info .category-tag { font-size: 10px; color: var(--grey); background: var(--light-grey); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 8px; }
+        
+        /* Ajuste para que las etiquetas múltiples se separen si hay más de una */
+        .recipe-card-info .category-tag { font-size: 10px; color: var(--grey); background: var(--light-grey); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 8px; margin-right: 5px; }
 
         #recipe-detail { display: none; padding-bottom: 100px; }
-        .back-btn { background: none; border: 1px solid #ddd; padding: 8px 15px; cursor: pointer; font-size: 12px; text-transform: uppercase; margin-bottom: 40px; }
-        .back-btn:hover { background: #000; color: #fff; }
+        
+        .back-btn { 
+            background: none; 
+            border: 1px solid #eee; 
+            padding: 10px 20px; 
+            border-radius: 20px;
+            cursor: pointer; 
+            font-size: 13px; 
+            color: #666;
+            transition: all 0.2s ease;
+            margin-bottom: 40px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .back-btn:hover { 
+            background: var(--accent); 
+            border-color: var(--accent);
+            color: #fff; 
+        }
 
         .detail-header h2 { font-size: 42px; font-weight: 700; margin: 0 0 10px; letter-spacing: -1px; }
         .detail-meta { font-size: 13px; color: var(--grey); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; }
         
-        /* Selector de raciones */
         .servings-selector { margin-bottom: 20px; font-size: 14px; font-weight: bold; }
         .servings-selector input { width: 50px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; margin-left: 10px; }
 
@@ -138,7 +165,6 @@
         ol { counter-reset: steps; }
         ol li { position: relative; padding-left: 45px; margin-bottom: 30px; font-size: 18px; line-height: 1.6; transition: background 0.3s; }
         
-        /* Al marcar el paso */
         ol li.done { background-color: var(--highlight); border-radius: 4px; }
 
         ol li::before { 
@@ -161,8 +187,8 @@
         @media (max-width: 600px) { 
             .content-split { flex-direction: column; } 
             header { text-align: center; justify-content: center; padding: 40px 20px 10px 20px; }
-            .categories-container { justify-content: center; margin-bottom: 25px; }
             .search-results-list { width: calc(100vw - 40px); right: -10px; left: -10px; margin: 5px auto; }
+            .categories-container { margin-bottom: 25px; padding: 0 15px; }
         }
     </style>
 </head>
@@ -185,7 +211,7 @@
     <button class="category-btn" onclick="filterByCategory('Platos marroquíes', this)">Platos marroquíes</button>
     <button class="category-btn" onclick="filterByCategory('Ensaladas', this)">Ensaladas</button>
     <button class="category-btn" onclick="filterByCategory('Picoteo', this)">Picoteo</button>
-    <button class="category-btn" onclick="filterByCategory('Pasta y otros', this)">Pasta y otros</button>
+    <button class="category-btn" onclick="filterByCategory('Pasta', this)">Pasta</button>
 </div>
 
 <div class="container">
@@ -201,7 +227,7 @@
         { 
             "id": 1, 
             "titulo": "Coca de pimentó i tomaco", 
-            "categoria": "Platos valencianos",
+            "categoria": ["Platos valencianos", "Picoteo"],
             "meta": "190 min / 4 personas", 
             "personas": 4,
             "imagen": "images/cocapimentoitomaco.png", 
@@ -233,7 +259,7 @@
         {
             "id": 2, 
             "titulo": "Sobrasada vegana", 
-            "categoria": "Picoteo",
+            "categoria": ["Picoteo"],
             "meta": "15 min / 2 personas", 
             "personas": 2,
             "imagen": "images/sobrasada_vegana.png", 
@@ -257,7 +283,7 @@
         {
             "id": 3, 
             "titulo": "Tortilla de patatas con cebolla y atún", 
-            "categoria": "Picoteo",
+            "categoria": ["Picoteo"],
             "meta": "45 min / 3 personas", 
             "personas": 3,
             "imagen": "images/tortillapatatascebollaatun.png", 
@@ -275,7 +301,7 @@
                 { "texto": "Pelar la cebolla blanca y cortarla en juliana fina o brunoise (dados pequeños).", "foto": "" },
                 { "texto": "Calentar abundante aceite de oliva en una sartén grande. Añadir las patatas y la cebolla con un poco de sal.", "foto": "" },
                 { "texto": "Cocinar a fuego medio-suave (pochar) durante unos 20 minutos hasta que la patata esté blanda pero no excesivamente dorada.", "foto": "" },
-                { "texto": "Mientras tanto, cascar los 6 huevos en un bol grande, añadir una pizca de sal y batirlos enérgicamente.", "foto": "" },
+                { "whitespace": "","texto": "Mientras tanto, cascar los 6 huevos en un bol grande, añadir una pizca de sal y batirlos enérgicamente.", "foto": "" },
                 { "texto": "Escurrir bien las patatas y la cebolla del exceso de aceite e incorporarlas inmediatamente al bol con los huevos batidos.", "foto": "" },
                 { "texto": "Escurrir el líquido de las latas de atún, desmigarlo un poco e incorporarlo a la mezcla del bol. Mezclar bien y dejar reposar 2 minutos para que la patata absorba el huevo.", "foto": "" },
                 { "texto": "En una sartén antiadherente con una gota de aceite, verter la mezcla y cocinar a fuego medio durante unos 3-4 minutos.", "foto": "" },
@@ -286,7 +312,7 @@
         {
             "id": 4, 
             "titulo": "Macarrones con magro y atún gratinados", 
-            "categoria": "Pasta y otros",
+            "categoria": ["Pasta"],
             "meta": "60 min / 2 personas", 
             "personas": 2,
             "imagen": "images/macarronesgratinados.png", 
@@ -304,7 +330,7 @@
             ], 
             "pasos": [
                 { "texto": "Poner a hervir abundante agua con sal en una olla. Cuando rompa a hervir, cocer los macarrones según el tiempo del fabricante para que queden 'al dente'.", "foto": "" },
-                { "texto": "Mientras se cuece la pasta, picar finamente la cebolla, el pimiento y los ajos.", "foto": "" },
+                { "texto": "Mientras se curece la pasta, picar finamente la cebolla, el pimiento y los ajos.", "foto": "" },
                 { "texto": "En una sartén amplia con aceite de oliva, dorar el magro de cerdo troceado hasta que esté bien sellado.", "foto": "" },
                 { "texto": "Añadir la cebolla, el pimiento y el ajo a la sartén con el magro. Sofreír a fuego medio hasta que la verdura esté tierna.", "foto": "" },
                 { "texto": "Incorporar el tomate triturado a la sartén, añadir sal y una pizca de orégano. Dejar que el sofrito reduzca a fuego lento durante 15 minutos.", "foto": "" },
@@ -318,7 +344,7 @@
         {
             "id": 5, 
             "titulo": "Tajín de muslos de pollo con aceitunas", 
-            "categoria": "Platos marroquíes",
+            "categoria": ["Platos marroquíes"],
             "meta": "75 min / 2 personas", 
             "personas": 2,
             "imagen": "images/tajinmuslodepollo.png", 
@@ -349,7 +375,7 @@
         {
             "id": 6, 
             "titulo": "Arroz al horno (Cassola valenciana)", 
-            "categoria": "Platos valencianos",
+            "categoria": ["Platos valencianos"],
             "meta": "90 min / 2 personas", 
             "personas": 2,
             "imagen": "images/cassola.png", 
@@ -384,7 +410,7 @@
         {
             "id": 7, 
             "titulo": "Espaguetis cremosos con pollo, bacon y atún", 
-            "categoria": "Pasta y otros",
+            "categoria": ["Pasta"],
             "meta": "35 min / 2 personas", 
             "personas": 2,
             "imagen": "images/espaguetisnata.png", 
@@ -414,7 +440,7 @@
         {
             "id": 8,
             "titulo": "Ensalada en tarro: El tarro balear",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_tarro_balear.png",
@@ -431,7 +457,7 @@
                 { "texto": "Picar finamente la cebolla y el pimiento rojo.", "foto": "" },
                 { "texto": "En un bol pequeño, diluir la cucharada de sobrasada con un chorrito de aceite de oliva caliente para formar una base de aliño integrada.", "foto": "" },
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Introducir el aliño de sobrasada y aceite.", "foto": "" },
-                { "texto": "Capa 2: Añadir la cebolla picada y el pimiento rojo sobre el aliño.", "foto": "" },
+                { "texto": "Capa 2: Añadir la cebolla picada and el pimiento rojo sobre el aliño.", "foto": "" },
                 { "texto": "Capa 3: Añadir los 200g de garbanzos cocidos bien limpios y escurridos.", "foto": "" },
                 { "texto": "Capa 4 (Superior): Coronar con los dados de queso manchego. Cerrar bien el tarro y refrigerar.", "foto": "" }
             ]
@@ -439,7 +465,7 @@
         {
             "id": 9,
             "titulo": "Ensalada en tarro: El pescado campero",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_pescado_campero.png",
@@ -448,7 +474,7 @@
                 "150g de alubias blancas cocidas",
                 "2 huevos cocidos",
                 "1 lata de atún en conserva",
-                "10 aceitunas cortadas por la mitad",
+                "10 aceitunas cortes por la mitad",
                 "8 tomates cherry cortados por la mitad",
                 "Aceite de oliva, vinagre y sal"
             ],
@@ -464,7 +490,7 @@
         {
             "id": 10,
             "titulo": "Ensalada en tarro: Hélices de corral",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_helices_corral.png",
@@ -489,7 +515,7 @@
         {
             "id": 11,
             "titulo": "Ensalada en tarro: Arroz tropical",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_arroz_tropical.png",
@@ -509,13 +535,13 @@
                 { "texto": "Capa 2: Añadir los dados de mango/piña junto con el maíz dulce.", "foto": "" },
                 { "texto": "Capa 3: Incorporar el aguacate (el contacto con la lima del fondo evitará que se oxide).", "foto": "" },
                 { "texto": "Capa 4: Colocar los langostinos troceados.", "foto": "" },
-                { "texto": "Capa 5 (Superior): Finalizar rellenando con el arroz basmati suelto. Cerrar el tarro.", "foto": "" }
+                { "texto": "Capa 5 (Superior): Finalizar rellenando con el arroz basmati suuelto. Cerrar el tarro.", "foto": "" }
             ]
         },
         {
             "id": 12,
             "titulo": "Ensalada en tarro: La Tex-Mex Express",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_texmex_express.png",
@@ -540,7 +566,7 @@
         {
             "id": 13,
             "titulo": "Ensalada en tarro: El capricho de cabra",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_capricho_cabra.png",
@@ -564,7 +590,7 @@
         {
             "id": 14,
             "titulo": "Ensalada en tarro: La rústica de la abuela",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_rustica_abuela.png",
@@ -578,7 +604,7 @@
             "pasos": [
                 { "texto": "Cocinar el contramuslo a la plancha o cocido, trocear pequeño y dejar que pierda el calor.", "foto": "" },
                 { "texto": "Lavar a fondo la rama de apio y cortarla en rodajas muy finas.", "foto": "" },
-                { "texto": "Montaje en el tarro - Capa 1 (Fondo): Servir el chorro de aceite de oliva virgen extra y la sal.", "foto": "" },
+                { "whitespace": "","texto": "Montaje en el tarro - Capa 1 (Fondo): Servir el chorro de aceite de oliva virgen extra y la sal.", "foto": "" },
                 { "texto": "Capa 2: Introducir el apio picado que aportará frescura y textura crujiente.", "foto": "" },
                 { "texto": "Capa 3: Colocar el contramuslo de pollo troceado.", "foto": "" },
                 { "texto": "Capa 4 (Superior): Verter las lentejas lavadas y escurridas en la parte superior. Cerrar bien.", "foto": "" }
@@ -587,7 +613,7 @@
         {
             "id": 15,
             "titulo": "Ensalada en tarro: El esgarraet campero",
-            "categoria": "Ensaladas",
+            "categoria": ["Ensaladas"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_esgarraet_campero.png",
@@ -611,7 +637,7 @@
     ];
 
     let wakeLock = null;
-    let categoriaActual = 'Todas'; // Almacena la categoría activa
+    let categoriaActual = 'Todas'; 
 
     async function toggleWakeLock(activate) {
         if (!('wakeLock' in navigator)) return;
@@ -632,37 +658,37 @@
         document.getElementById('home-view').style.display = 'grid';
         document.getElementById('recipe-detail').style.display = 'none';
         document.getElementById('search-box').style.display = 'block';
-        document.getElementById('categories-box').style.display = 'flex'; // Volver a mostrar las categorías
+        document.getElementById('categories-box').style.display = 'flex'; 
         document.getElementById('quick-results').style.display = 'none';
         document.getElementById('searchInput').value = '';
-        
-        // Al volver, respetamos si había un filtro seleccionado
         aplicarFiltrosYBusqueda();
     }
 
+    // AJUSTE 1: Muestra cada categoría del array por separado en la cuadrícula de tarjetas
     function renderHome(listaRecetas) {
         const homeView = document.getElementById('home-view');
         if (listaRecetas.length === 0) {
             homeView.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No se encontraron recetas en esta categoría.</div>';
             return;
         }
-        homeView.innerHTML = listaRecetas.map(r => `
-            <div class="recipe-card" onclick="showRecipe(${r.id})">
-                <img src="${r.imagen}" class="recipe-card-img" alt="${r.titulo}">
-                <div class="recipe-card-info">
-                    <div class="meta">${r.meta}</div>
-                    <h2>${r.titulo}</h2>
-                    <span class="category-tag">${r.categoria}</span>
+        homeView.innerHTML = listaRecetas.map(r => {
+            const tagsHTML = r.categoria.map(cat => `<span class="category-tag">${cat}</span>`).join('');
+            return `
+                <div class="recipe-card" onclick="showRecipe(${r.id})">
+                    <img src="${r.imagen}" class="recipe-card-img" alt="${r.titulo}">
+                    <div class="recipe-card-info">
+                        <div class="meta">${r.meta}</div>
+                        <h2>${r.titulo}</h2>
+                        <div>${tagsHTML}</div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
-    // Nueva función para gestionar el filtro por botón de categoría
     function filterByCategory(categoria, elemento) {
         categoriaActual = categoria;
         
-        // Cambiar la clase activa del botón
         const botones = document.querySelectorAll('.category-btn');
         botones.forEach(btn => btn.classList.remove('active'));
         elemento.classList.add('active');
@@ -671,24 +697,21 @@
     }
 
     function filterRecipes() {
-        // Al escribir en el buscador, actualizamos la vista cruzando datos
         aplicarFiltrosYBusqueda();
     }
 
-    // Centraliza la lógica para que el buscador y los botones no se pisen entre sí
+    // AJUSTE 2: Lógica cambiada para usar .includes() en lugar de ===
     function aplicarFiltrosYBusqueda() {
         const textoBusqueda = document.getElementById('searchInput').value.toLowerCase();
         const resultsContainer = document.getElementById('quick-results');
 
-        // 1. Filtrar primero por categoría
         let filtradas = recetas;
         if (categoriaActual !== 'Todas') {
-            filtradas = recetas.filter(r => r.categoria === categoriaActual);
+            // Buscamos si la categoría está contenida dentro del array de la receta
+            filtradas = recetas.filter(r => r.categoria.includes(categoriaActual));
         }
 
-        // 2. Si hay texto en el buscador, filtrar también por texto
         if (textoBusqueda.length >= 2) {
-            // El menú desplegable rápido busca de forma global (en todo el recetario)
             const busquedaGlobal = recetas.filter(r => 
                 r.titulo.toLowerCase().includes(textoBusqueda) || 
                 r.ingredientes.some(i => i.toLowerCase().includes(textoBusqueda))
@@ -699,14 +722,13 @@
                 resultsContainer.innerHTML = busquedaGlobal.map(r => `
                     <div class="search-item" onclick="showRecipe(${r.id})">
                         <strong>${r.titulo}</strong>
-                        <span style="font-size:11px; color:#999">${r.meta} (${r.categoria})</span>
+                        <span style="font-size:11px; color:#999">${r.meta} (${r.categoria.join(', ')})</span>
                     </div>
                 `).join('');
             } else {
                 resultsContainer.innerHTML = '<div class="search-item">No hay resultados</div>';
             }
 
-            // En la cuadrícula principal sí cruzamos ambos filtros
             filtradas = filtradas.filter(r => 
                 r.titulo.toLowerCase().includes(textoBusqueda) || 
                 r.ingredientes.some(i => i.toLowerCase().includes(textoBusqueda))
@@ -739,6 +761,7 @@
         element.classList.toggle('done');
     }
 
+    // AJUSTE 3: Une las categorías con comas en la cabecera de la vista detalle
     function showRecipe(id) {
         toggleWakeLock(true); 
         const recipe = recetas.find(r => r.id === id);
@@ -752,13 +775,13 @@
         resultsContainer.style.display = 'none';
         homeView.style.display = 'none';
         searchBox.style.display = 'none';
-        categoriesBox.style.display = 'none'; // Ocultar categorías en la vista detalle
+        categoriesBox.style.display = 'none'; 
         detailView.style.display = 'block';
 
         content.innerHTML = `
             <div class="detail-header">
                 <h2>${recipe.titulo}</h2>
-                <div class="detail-meta">${recipe.meta} | ${recipe.categoria}</div>
+                <div class="detail-meta">${recipe.meta} | ${recipe.categoria.join(', ')}</div>
             </div>
 
             <div class="servings-selector">
