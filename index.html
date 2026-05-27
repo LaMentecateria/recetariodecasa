@@ -207,11 +207,12 @@
 
 <div class="categories-container" id="categories-box">
     <button class="category-btn active" onclick="filterByCategory('Todas', this)">Todas</button>
-    <button class="category-btn" onclick="filterByCategory('Platos valencianos', this)">Platos valencianos</button>
-    <button class="category-btn" onclick="filterByCategory('Platos marroquíes', this)">Platos marroquíes</button>
-    <button class="category-btn" onclick="filterByCategory('Ensaladas', this)">Ensaladas</button>
+    <button class="category-btn" onclick="filterByCategory('Valencia', this)">Gastronomía valenciana</button>
+    <button class="category-btn" onclick="filterByCategory('Marruecos', this)">Gastronomía marroquí</button>
+    <button class="category-btn" onclick="filterByCategory('Ensalada', this)">Ensaladas</button>
     <button class="category-btn" onclick="filterByCategory('Picoteo', this)">Picoteo</button>
     <button class="category-btn" onclick="filterByCategory('Pasta', this)">Pasta</button>
+    <button class="category-btn" onclick="filterByCategory('Vegetariano', this)">Vegetariano</button>
 </div>
 
 <div class="container">
@@ -225,9 +226,9 @@
 <script>
     const recetas = [
         { 
-            "id": 1, 
+            "id": 9, 
             "titulo": "Coca de pimentó i tomaco", 
-            "categoria": ["Platos valencianos", "Picoteo"],
+            "categoria": ["Valencia", "Picoteo", "Vegetariano"],
             "meta": "190 min / 4 personas", 
             "personas": 4,
             "imagen": "images/cocapimentoitomaco.png", 
@@ -249,7 +250,7 @@
                 { "texto": "Primera fermentada: Dejar reposar la masa en el bol cubierto con un paño seco durante 1 hora para que doble su volumen.", "foto": "" },
                 { "texto": "Pasada la hora, aceitar la bandeja del horno y extender la masa uniformemente sobre toda la superficie. (puede usarse papel vegetal para hornos).", "foto": "" },
                 { "texto": "Segunda fermentada: Tapar la masa con el paño seco y dejarla reposar durante 1 hora mientras se prepara el sofrito.", "foto": "" },
-                { "texto": "Preparar el sofrito: Trocear los pimientos y tomates y sofreírlos en un cazo u olla con aceite y sal.", "foto": "" },
+                { "texto": "Preparar el sofrito: Trocear los pimientos y tomates y sofreírlos en un cazo u olla con aceite and sal.", "foto": "" },
                 { "texto": "Cuando el sofrito esté a media cocción, encender el horno y precalentar a una temperatura de 210 grados.", "foto": "" },
                 { "texto": "Repartir el sofrito de pimiento y tomate sobre la masa fermentada de la bandeja. (Si se quiere más sabor en la masa, pincharla con un tenedor levemente para que el jugo del sofrito penetre en la masa)", "foto": "" },
                 { "texto": "Incorporar los piñones por encima del sofrito justo antes de introducir la bandeja al horno.", "foto": "" },
@@ -257,9 +258,9 @@
             ]
         },
         {
-            "id": 2, 
+            "id": 12, 
             "titulo": "Sobrasada vegana", 
-            "categoria": ["Picoteo"],
+            "categoria": ["Picoteo", "Vegetariano"],
             "meta": "15 min / 2 personas", 
             "personas": 2,
             "imagen": "images/sobrasada_vegana.png", 
@@ -281,7 +282,7 @@
             ]
         },
         {
-            "id": 3, 
+            "id": 4, 
             "titulo": "Tortilla de patatas con cebolla y atún", 
             "categoria": ["Picoteo"],
             "meta": "45 min / 3 personas", 
@@ -310,7 +311,7 @@
             ]
         },
         {
-            "id": 4, 
+            "id": 7, 
             "titulo": "Macarrones con magro y atún gratinados", 
             "categoria": ["Pasta"],
             "meta": "60 min / 2 personas", 
@@ -330,7 +331,7 @@
             ], 
             "pasos": [
                 { "texto": "Poner a hervir abundante agua con sal en una olla. Cuando rompa a hervir, cocer los macarrones según el tiempo del fabricante para que queden 'al dente'.", "foto": "" },
-                { "texto": "Mientras se curece la pasta, picar finamente la cebolla, el pimiento y los ajos.", "foto": "" },
+                { "texto": "Mientras se cuece la pasta, picar finamente la cebolla, el pimiento y los ajos.", "foto": "" },
                 { "texto": "En una sartén amplia con aceite de oliva, dorar el magro de cerdo troceado hasta que esté bien sellado.", "foto": "" },
                 { "texto": "Añadir la cebolla, el pimiento y el ajo a la sartén con el magro. Sofreír a fuego medio hasta que la verdura esté tierna.", "foto": "" },
                 { "texto": "Incorporar el tomate triturado a la sartén, añadir sal y una pizca de orégano. Dejar que el sofrito reduzca a fuego lento durante 15 minutos.", "foto": "" },
@@ -342,9 +343,9 @@
             ]
         },
         {
-            "id": 5, 
+            "id": 15, 
             "titulo": "Tajín de muslos de pollo con aceitunas", 
-            "categoria": ["Platos marroquíes"],
+            "categoria": ["Marruecos"],
             "meta": "75 min / 2 personas", 
             "personas": 2,
             "imagen": "images/tajinmuslodepollo.png", 
@@ -373,9 +374,9 @@
             ]
         },
         {
-            "id": 6, 
-            "titulo": "Arroz al horno (Cassola valenciana)", 
-            "categoria": ["Platos valencianos"],
+            "id": 14, 
+            "titulo": "Cassola valenciana (Arroz al horno)", 
+            "categoria": ["Valencia"],
             "meta": "90 min / 2 personas", 
             "personas": 2,
             "imagen": "images/cassola.png", 
@@ -408,7 +409,7 @@
             ]
         },
         {
-            "id": 7, 
+            "id": 2, 
             "titulo": "Espaguetis cremosos con pollo, bacon y atún", 
             "categoria": ["Pasta"],
             "meta": "35 min / 2 personas", 
@@ -438,9 +439,9 @@
             ]
         },
         {
-            "id": 8,
+            "id": 13,
             "titulo": "Ensalada en tarro: El tarro balear",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_tarro_balear.png",
@@ -463,9 +464,9 @@
             ]
         },
         {
-            "id": 9,
+            "id": 3,
             "titulo": "Ensalada en tarro: El pescado campero",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_pescado_campero.png",
@@ -488,9 +489,9 @@
             ]
         },
         {
-            "id": 10,
+            "id": 11,
             "titulo": "Ensalada en tarro: Hélices de corral",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_helices_corral.png",
@@ -513,9 +514,9 @@
             ]
         },
         {
-            "id": 11,
+            "id": 1,
             "titulo": "Ensalada en tarro: Arroz tropical",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_arroz_tropical.png",
@@ -539,9 +540,9 @@
             ]
         },
         {
-            "id": 12,
+            "id": 8,
             "titulo": "Ensalada en tarro: La Tex-Mex Express",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_texmex_express.png",
@@ -564,9 +565,9 @@
             ]
         },
         {
-            "id": 13,
+            "id": 6,
             "titulo": "Ensalada en tarro: El capricho de cabra",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_capricho_cabra.png",
@@ -588,9 +589,9 @@
             ]
         },
         {
-            "id": 14,
+            "id": 5,
             "titulo": "Ensalada en tarro: La rústica de la abuela",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_rustica_abuela.png",
@@ -611,9 +612,9 @@
             ]
         },
         {
-            "id": 15,
+            "id": 10,
             "titulo": "Ensalada en tarro: El esgarraet campero",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_esgarraet_campero.png",
@@ -664,7 +665,6 @@
         aplicarFiltrosYBusqueda();
     }
 
-    // AJUSTE 1: Muestra cada categoría del array por separado en la cuadrícula de tarjetas
     function renderHome(listaRecetas) {
         const homeView = document.getElementById('home-view');
         if (listaRecetas.length === 0) {
@@ -700,14 +700,12 @@
         aplicarFiltrosYBusqueda();
     }
 
-    // AJUSTE 2: Lógica cambiada para usar .includes() en lugar de ===
     function aplicarFiltrosYBusqueda() {
         const textoBusqueda = document.getElementById('searchInput').value.toLowerCase();
         const resultsContainer = document.getElementById('quick-results');
 
         let filtradas = recetas;
         if (categoriaActual !== 'Todas') {
-            // Buscamos si la categoría está contenida dentro del array de la receta
             filtradas = recetas.filter(r => r.categoria.includes(categoriaActual));
         }
 
@@ -737,6 +735,9 @@
             resultsContainer.style.display = 'none';
         }
 
+        // 🌟 ORDENA DE MAYOR A MENOR ID (El número más alto primero, el 1 el último)
+        filtradas.sort((a, b) => b.id - a.id);
+
         renderHome(filtradas);
     }
 
@@ -761,7 +762,6 @@
         element.classList.toggle('done');
     }
 
-    // AJUSTE 3: Une las categorías con comas en la cabecera de la vista detalle
     function showRecipe(id) {
         toggleWakeLock(true); 
         const recipe = recetas.find(r => r.id === id);
@@ -824,7 +824,8 @@
         }
     });
 
-    renderHome(recetas);
+    // 🌟 SE CAMBIA EL RENDER DIRECTO POR LA FUNCIÓN PARA QUE ORDENE DESDE EL INICIO
+    aplicarFiltrosYBusqueda();
 </script>
 </body>
 </html>
