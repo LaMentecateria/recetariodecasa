@@ -19,7 +19,7 @@
         header { 
             max-width: 1000px; 
             margin: 0 auto; 
-            padding: 60px 20px; 
+            padding: 60px 20px 20px 20px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
@@ -72,6 +72,35 @@
         .search-item:hover { background: var(--light-grey); }
         .search-item strong { display: block; color: var(--accent); }
 
+        /* Contenedor de Categorías */
+        .categories-container {
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .category-btn {
+            background: none;
+            border: 1px solid #eee;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #666;
+        }
+        .category-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .category-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
         .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
 
         .recipe-grid-home { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding-bottom: 60px; }
@@ -82,6 +111,7 @@
         .recipe-card-info { padding: 20px; }
         .recipe-card-info h2 { font-size: 20px; margin: 0 0 10px; color: #111; }
         .recipe-card-info .meta { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
+        .recipe-card-info .category-tag { font-size: 10px; color: var(--grey); background: var(--light-grey); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 8px; }
 
         #recipe-detail { display: none; padding-bottom: 100px; }
         .back-btn { background: none; border: 1px solid #ddd; padding: 8px 15px; cursor: pointer; font-size: 12px; text-transform: uppercase; margin-bottom: 40px; }
@@ -130,7 +160,8 @@
 
         @media (max-width: 600px) { 
             .content-split { flex-direction: column; } 
-            header { text-align: center; justify-content: center; padding: 40px 20px; }
+            header { text-align: center; justify-content: center; padding: 40px 20px 10px 20px; }
+            .categories-container { justify-content: center; margin-bottom: 25px; }
             .search-results-list { width: calc(100vw - 40px); right: -10px; left: -10px; margin: 5px auto; }
         }
     </style>
@@ -148,6 +179,15 @@
     </div>
 </header>
 
+<div class="categories-container" id="categories-box">
+    <button class="category-btn active" onclick="filterByCategory('Todas', this)">Todas</button>
+    <button class="category-btn" onclick="filterByCategory('Platos valencianos', this)">Platos valencianos</button>
+    <button class="category-btn" onclick="filterByCategory('Platos marroquíes', this)">Platos marroquíes</button>
+    <button class="category-btn" onclick="filterByCategory('Ensaladas', this)">Ensaladas</button>
+    <button class="category-btn" onclick="filterByCategory('Picoteo', this)">Picoteo</button>
+    <button class="category-btn" onclick="filterByCategory('Pasta y otros', this)">Pasta y otros</button>
+</div>
+
 <div class="container">
     <div id="home-view" class="recipe-grid-home"></div>
     <div id="recipe-detail">
@@ -160,213 +200,221 @@
     const recetas = [
         { 
             "id": 1, 
-    "titulo": "Coca de pimentó i tomaco", 
-    "meta": "190 min / 4 personas", 
-    "personas": 4,
-    "imagen": "images/cocapimentoitomaco.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "750g de harina de trigo", 
-        "1 vaso de cerveza (aprox. 250ml)", 
-        "15g de levadura fresca", 
-        "2 pimientos rojos grandes",
-        "2 pimientos verdes medianos", 
-        "3 tomates", 
-        "Piñones",
-        "0.5 vaso de aceite de oliva",
-        "Sal"
-    ], 
-    "pasos": [
-        { "texto": "Mezclar la cerveza, el aceite, la sal y la levadura fresca desmenuzada en el bol donde mezclaremos la harina.", "foto": "" },
-        { "texto": "Incorporar la harina mientras se amasa hasta obtener una masa elástica.", "foto": "" },
-        { "texto": "Primera fermentada: Dejar reposar la masa en el bol cubierto con un paño seco durante 1 hora para que doble su volumen.", "foto": "" },
-        { "texto": "Pasada la hora, aceitar la bandeja del horno y extender la masa uniformemente sobre toda la superficie. (puede usarse papel vegetal para hornos).", "foto": "" },
-        { "texto": "Segunda fermentada: Tapar la masa con el paño seco y dejarla reposar durante 1 hora mientras se prepara el sofrito.", "foto": "" },
-        { "texto": "Preparar el sofrito: Trocear los pimientos y tomates y sofreírlos en un cazo u olla con aceite y sal.", "foto": "" },
-        { "texto": "Cuando el sofrito esté a media cocción, encender el horno y precalentar a una temperatura de 210 grados.", "foto": "" },
-        { "texto": "Repartir el sofrito de pimiento y tomate sobre la masa fermentada de la bandeja. (Si se quiere más sabor en la masa, pincharla con un tenedor levemente para que el jugo del sofrito penetre en la masa)", "foto": "" },
-        { "texto": "Incorporar los piñones por encima del sofrito justo antes de introducir la bandeja al horno.", "foto": "" },
-        { "texto": "Hornear la coca durante 45 minutos a 210 grados hasta que los bordes estén dorados y crujientes.", "foto": "images/cocapimentoitomaco.png" }
-    ]
-},
-{
-    "id": 2, 
-    "titulo": "Sobrasada vegana", 
-    "meta": "15 min / 2 personas", 
-    "personas": 2,
-    "imagen": "images/sobrasada_vegana.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "100g tomate deshidratado con aceite", 
-        "100g anacardos tostados sin sal", 
-        "1 diente de ajo sin el germen", 
-        "1 cucharadita de pimentón de la Vera", 
-        "1 cucharadita de albahaca seca", 
-        "1 cucharadita de orégano seco", 
-        "Sal"
-    ], 
-    "pasos": [
-        { "texto": "Triturar 100g de anacardos hasta conseguir una harina, reservar", "foto": "" },
-        { "texto": "Quitar el germen del ajo y echarlo a la trituradora. Sacar los tomates del tarro y echarlos en la trituradora. Triturar hasta conseguir una pasta.", "foto": "" },
-        { "texto": "Echar una cucharadita de pimentón de la vera, una cucharadita de orégano y una cucharadita de albahaca a la harina de anacardo y mezclar bien", "foto": "" },
-        { "texto": "Incorporar la pasta de tomate seco a los anacardos y mezclar. Aprovechar el aceite de los tomates para dar una mejor textura a la sobrasada. Sal al gusto.", "foto": "" }
-    ]
-},
-{
-    "id": 3, 
-    "titulo": "Tortilla de patatas con cebolla y atún", 
-    "meta": "45 min / 3 personas", 
-    "personas": 3,
-    "imagen": "images/tortillapatatascebollaatun.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "6 huevos grandes", 
-        "4 patatas medianas (tipo monalisa o kennebec)", 
-        "1 cebolla blanca", 
-        "2 latas pequeñas de atún en conserva (en aceite o al natural)", 
-        "Aceite de oliva virgen extra", 
-        "Sal"
-    ], 
-    "pasos": [
-        { "texto": "Pelar y lavar las patatas. Cortarlas en láminas finas o dados pequeños de tamaño uniforme.", "foto": "" },
-        { "texto": "Pelar la cebolla blanca y cortarla en juliana fina o brunoise (dados pequeños).", "foto": "" },
-        { "texto": "Calentar abundante aceite de oliva en una sartén grande. Añadir las patatas y la cebolla con un poco de sal.", "foto": "" },
-        { "texto": "Cocinar a fuego medio-suave (pochar) durante unos 20 minutos hasta que la patata esté blanda pero no excesivamente dorada.", "foto": "" },
-        { "texto": "Mientras tanto, cascar los 6 huevos en un bol grande, añadir una pizca de sal y batirlos enérgicamente.", "foto": "" },
-        { "texto": "Escurrir bien las patatas y la cebolla del exceso de aceite e incorporarlas inmediatamente al bol con los huevos batidos.", "foto": "" },
-        { "texto": "Escurrir el líquido de las latas de atún, desmigarlo un poco e incorporarlo a la mezcla del bol. Mezclar bien y dejar reposar 2 minutos para que la patata absorba el huevo.", "foto": "" },
-        { "texto": "En una sartén antiadherente con una gota de aceite, verter la mezcla y cocinar a fuego medio durante unos 3-4 minutos.", "foto": "" },
-        { "texto": "Dar la vuelta a la tortilla con ayuda de un plato llano o un vuelca-tortillas con un movimiento firme y rápido.", "foto": "" },
-        { "texto": "Cuajar el otro lado durante 2-3 minutos adicionales dependiendo de si se prefiere más o menos hecha. Retirar y dejar reposar antes de servir.", "foto": "images/tortillapatatascebollaatun.png" }
-    ]
-},
-{
-    "id": 4, 
-    "titulo": "Macarrones con magro y atún gratinados", 
-    "meta": "60 min / 2 personas", 
-    "personas": 2,
-    "imagen": "images/macarronesgratinados.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "400g de macarrones", 
-        "250g de magro de cerdo troceado pequeño", 
-        "2 latas de atún en conserva", 
-        "500g de tomate triturado o tamizado", 
-        "1 pimiento rojo", 
-        "1 cebolla blanca", 
-        "2 dientes de ajo",
-        "Queso rallado para gratinar",
-        "Aceite de oliva, sal y orégano"
-    ], 
-    "pasos": [
-        { "texto": "Poner a hervir abundante agua con sal en una olla. Cuando rompa a hervir, cocer los macarrones según el tiempo del fabricante para que queden 'al dente'.", "foto": "" },
-        { "texto": "Mientras se cuece la pasta, picar finamente la cebolla, el pimiento y los ajos.", "foto": "" },
-        { "texto": "En una sartén amplia con aceite de oliva, dorar el magro de cerdo troceado hasta que esté bien sellado.", "foto": "" },
-        { "texto": "Añadir la cebolla, el pimiento y el ajo a la sartén con el magro. Sofreír a fuego medio hasta que la verdura esté tierna.", "foto": "" },
-        { "texto": "Incorporar el tomate triturado a la sartén, añadir sal y una pizca de orégano. Dejar que el sofrito reduzca a fuego lento durante 15 minutos.", "foto": "" },
-        { "texto": "Añadir el atún bien escurrido al sofrito, mezclar durante un minuto y retirar del fuego.", "foto": "" },
-        { "texto": "Escurrir los macarrones y mezclarlos en el bol o en la propia sartén con el sofrito de magro y atún para que se impregnen bien.", "foto": "" },
-        { "texto": "Pasar los macarrones a una fuente apta para horno y encender el grill a 220 grados.", "foto": "" },
-        { "texto": "Cubrir toda la superficie con una capa generosa de queso rallado.", "foto": "" },
-        { "texto": "Introducir al horno y gratinar durante 5-8 minutos hasta que el queso esté dorado y burbujeante.", "foto": "images/macarronesgratinados.png" }
-    ]
-},
-{
-    "id": 5, 
-    "titulo": "Tajín de muslos de pollo con aceitunas", 
-    "meta": "75 min / 2 personas", 
-    "personas": 2,
-    "imagen": "images/tajinmuslodepollo.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "4 muslos de pollo (pueden ser enteros o jamoncitos)", 
-        "2 cebollas grandes", 
-        "3 patatas medianas", 
-        "2 zanahorias", 
-        "100g de aceitunas verdes sin hueso", 
-        "Especias: Cúrcuma, jengibre, pimienta negra y una pizca de canela", 
-        "Aceite de oliva y sal",
-        "Pan de hogaza o pita (para acompañar)"
-    ], 
-    "pasos": [
-        { "texto": "Preparar el marinado: En un bol pequeño, mezclar un chorro de aceite de oliva con la sal y todas las especias (cúrcuma, jengibre, pimienta y canela).", "foto": "" },
-        { "texto": "Impregnar bien los muslos de pollo con el marinado y dejarlos reposar al menos 15 minutos para que absorban el sabor.", "foto": "" },
-        { "texto": "Cortar la cebolla en juliana fina, las patatas en rodajas de un centímetro y las zanahorias en bastones o rodajas.", "foto": "" },
-        { "texto": "En la base del tajín (o una olla de barro/pesada), poner un fondo de aceite y crear una cama generosa con la cebolla picada.", "foto": "" },
-        { "texto": "Colocar sobre la cebolla las rodajas de patata y las zanahorias, formando una base sólida para el pollo.", "foto": "" },
-        { "texto": "Situar los muslos de pollo en el centro, encima de las verduras, y añadir un chorrito de agua (aprox. medio vaso) por los bordes para generar vapor.", "foto": "" },
-        { "texto": "Tapar el tajín y cocinar a fuego muy lento durante unos 45-50 minutos. Es importante no destapar mucho para que el vapor cocine el pollo.", "foto": "" },
-        { "texto": "Cuando falten 10 minutos para terminar, incorporar las aceitunas sin hueso por toda la superficie.", "foto": "" },
-        { "texto": "Retirar del fuego cuando el pollo esté tierno y la salsa haya reducido hasta quedar ligada.", "foto": "" },
-        { "texto": "Servir en el centro de la mesa. Nota: Se consume tradicionalmente con las manos, usando trozos de pan como 'cuchara' para recoger el pollo y la verdura.", "foto": "images/tajinmuslodepollo.png" }
-    ]
-},
-{
-    "id": 6, 
-    "titulo": "Arroz al horno (Cassola valenciana)", 
-    "meta": "90 min / 2 personas", 
-    "personas": 2,
-    "imagen": "images/cassola.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "400g de arroz redondo", 
-        "800ml de caldo de cocido (o agua con 1 pastilla de caldo)", 
-        "250g de costillas de cerdo troceadas", 
-        "2 tiras de panceta troceada", 
-        "100g de garbanzos cocidos", 
-        "4 longanizas blancas", 
-        "2 botifarras de cebolla", 
-        "1 cabeza de ajos entera", 
-        "1 tomate grande", 
-        "1 patata mediana", 
-        "4 cucharadas de tomate triturado", 
-        "Aceite de oliva, sal y azafrán (o colorante)"
-    ], 
-    "pasos": [
-        { "texto": "Encender el horno y precalentar a 220 grados para que esté listo al meter la cazuela.", "foto": "" },
-        { "texto": "En una sartén con aceite, sofreír la cabeza de ajos entera y reservarla. Sofreír la patata cortada en láminas gruesas y reservarla también.", "foto": "" },
-        { "texto": "En el mismo aceite, dorar las costillas de cerdo y la panceta hasta que estén bien selladas. Sacar y reservar.", "foto": "" },
-        { "texto": "Sofreír ligeramente las longanizas y las botifarras (solo un minuto para que no revienten) y reservar.", "foto": "" },
-        { "texto": "Añadir el tomate triturado a la sartén con el resto del aceite y sofreír hasta que pierda el agua. Incorporar los garbanzos cocidos y el arroz, removiendo todo durante un par de minutos para nacarar el arroz.", "foto": "" },
-        { "texto": "Pasar todo el contenido de la sartén (arroz, carne, garbanzos y sofrito) a una cazuela de barro (cassola).", "foto": "" },
-        { "texto": "Añadir el caldo muy caliente (proporción doble que de arroz) y rectificar de sal y azafrán.", "foto": "" },
-        { "texto": "Decoración: Colocar la cabeza de ajos en el centro, el medio tomate en el lateral, las láminas de patata alrededor y coronar con las longanizas y botifarras.", "foto": "" },
-        { "texto": "Introducir la cazuela en el horno a 220 grados durante unos 20-25 minutos, hasta que el caldo se haya evaporado y el arroz esté seco.", "foto": "" },
-        { "texto": "Dejar reposar 5 minutos fuera del horno antes de servir para que el grano termine de asentarse.", "foto": "images/cassola.png" }
-    ]
-},
-{
-    "id": 7, 
-    "titulo": "Espaguetis cremosos con pollo, bacon y atún", 
-    "meta": "35 min / 2 personas", 
-    "personas": 2,
-    "imagen": "images/espaguetisnata.png", 
-    "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
-    "ingredientes": [
-        "400g de espaguetis", 
-        "200ml de nata para cocinar (crema de leche)", 
-        "1 pechuga de pollo cortada en tiras pequeñas", 
-        "100g de bacon ahumado en tiras", 
-        "2 latas de atún en conserva", 
-        "1 cebolla blanca pequeña", 
-        "150g de champiñones laminados", 
-        "Aceite de oliva, sal y pimienta negra"
-    ], 
-    "pasos": [
-        { "texto": "Poner a hervir abundante agua con sal. Cocer los espaguetis el tiempo indicado por el fabricante hasta que estén al dente.", "foto": "" },
-        { "texto": "Mientras tanto, picar la cebolla finamente y limpiar los champiñones laminados.", "foto": "" },
-        { "texto": "En una sartén grande con un chorrito de aceite, dorar las tiras de pollo y el bacon hasta que estén crujientes. Sacar y reservar.", "foto": "" },
-        { "texto": "En la misma sartén, aprovechar la grasa del bacon para sofreír la cebolla y los champiñones hasta que doren.", "foto": "" },
-        { "texto": "Volver a incorporar el pollo y el bacon a la sartén. Añadir el atún bien escurrido y mezclar todo un minuto.", "foto": "" },
-        { "texto": "Verter la nata para cocinar sobre el sofrito y sazonar con abundante pimienta negra recién molida y una pizca de sal.", "foto": "" },
-        { "texto": "Cocinar a fuego lento durante 5 minutos para que la salsa espese y los sabores se integren bien.", "foto": "" },
-        { "texto": "Escurrir los espaguetis y añadirlos directamente a la sartén con la salsa cremosa.", "foto": "" },
-        { "texto": "Remover todo a fuego suave durante un minuto para que la pasta se empape completamente de la salsa.", "foto": "images/espaguetisnata.png" }
-    ]
-},
+            "titulo": "Coca de pimentó i tomaco", 
+            "categoria": "Platos valencianos",
+            "meta": "190 min / 4 personas", 
+            "personas": 4,
+            "imagen": "images/cocapimentoitomaco.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "750g de harina de trigo", 
+                "1 vaso de cerveza (aprox. 250ml)", 
+                "15g de levadura fresca", 
+                "2 pimientos rojos grandes",
+                "2 pimientos verdes medianos", 
+                "3 tomates", 
+                "Piñones",
+                "0.5 vaso de aceite de oliva",
+                "Sal"
+            ], 
+            "pasos": [
+                { "texto": "Mezclar la cerveza, el aceite, la sal y la levadura fresca desmenuzada en el bol donde mezclaremos la harina.", "foto": "" },
+                { "texto": "Incorporar la harina mientras se amasa hasta obtener una masa elástica.", "foto": "" },
+                { "texto": "Primera fermentada: Dejar reposar la masa en el bol cubierto con un paño seco durante 1 hora para que doble su volumen.", "foto": "" },
+                { "texto": "Pasada la hora, aceitar la bandeja del horno y extender la masa uniformemente sobre toda la superficie. (puede usarse papel vegetal para hornos).", "foto": "" },
+                { "texto": "Segunda fermentada: Tapar la masa con el paño seco y dejarla reposar durante 1 hora mientras se prepara el sofrito.", "foto": "" },
+                { "texto": "Preparar el sofrito: Trocear los pimientos y tomates y sofreírlos en un cazo u olla con aceite y sal.", "foto": "" },
+                { "texto": "Cuando el sofrito esté a media cocción, encender el horno y precalentar a una temperatura de 210 grados.", "foto": "" },
+                { "texto": "Repartir el sofrito de pimiento y tomate sobre la masa fermentada de la bandeja. (Si se quiere más sabor en la masa, pincharla con un tenedor levemente para que el jugo del sofrito penetre en la masa)", "foto": "" },
+                { "texto": "Incorporar los piñones por encima del sofrito justo antes de introducir la bandeja al horno.", "foto": "" },
+                { "texto": "Hornear la coca durante 45 minutos a 210 grados hasta que los bordes estén dorados y crujientes.", "foto": "images/cocapimentoitomaco.png" }
+            ]
+        },
+        {
+            "id": 2, 
+            "titulo": "Sobrasada vegana", 
+            "categoria": "Picoteo",
+            "meta": "15 min / 2 personas", 
+            "personas": 2,
+            "imagen": "images/sobrasada_vegana.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "100g tomate deshidratado con aceite", 
+                "100g anacardos tostados sin sal", 
+                "1 diente de ajo sin el germen", 
+                "1 cucharadita de pimentón de la Vera", 
+                "1 cucharadita de albahaca seca", 
+                "1 cucharadita de orégano seco", 
+                "Sal"
+            ], 
+            "pasos": [
+                { "texto": "Triturar 100g de anacardos hasta conseguir una harina, reservar", "foto": "" },
+                { "texto": "Quitar el germen del ajo y echarlo a la trituradora. Sacar los tomates del tarro y echarlos en la trituradora. Triturar hasta conseguir una pasta.", "foto": "" },
+                { "texto": "Echar una cucharadita de pimentón de la vera, una cucharadita de orégano y una cucharadita de albahaca a la harina de anacardo y mezclar bien", "foto": "" },
+                { "texto": "Incorporar la pasta de tomate seco a los anacardos y mezclar. Aprovechar el aceite de los tomates para dar una mejor textura a la sobrasada. Sal al gusto.", "foto": "" }
+            ]
+        },
+        {
+            "id": 3, 
+            "titulo": "Tortilla de patatas con cebolla y atún", 
+            "categoria": "Picoteo",
+            "meta": "45 min / 3 personas", 
+            "personas": 3,
+            "imagen": "images/tortillapatatascebollaatun.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "6 huevos grandes", 
+                "4 patatas medianas (tipo monalisa o kennebec)", 
+                "1 cebolla blanca", 
+                "2 latas pequeñas de atún en conserva (en aceite o al natural)", 
+                "Aceite de oliva virgen extra", 
+                "Sal"
+            ], 
+            "pasos": [
+                { "texto": "Pelar y lavar las patatas. Cortarlas en láminas finas o dados pequeños de tamaño uniforme.", "foto": "" },
+                { "texto": "Pelar la cebolla blanca y cortarla en juliana fina o brunoise (dados pequeños).", "foto": "" },
+                { "texto": "Calentar abundante aceite de oliva en una sartén grande. Añadir las patatas y la cebolla con un poco de sal.", "foto": "" },
+                { "texto": "Cocinar a fuego medio-suave (pochar) durante unos 20 minutos hasta que la patata esté blanda pero no excesivamente dorada.", "foto": "" },
+                { "texto": "Mientras tanto, cascar los 6 huevos en un bol grande, añadir una pizca de sal y batirlos enérgicamente.", "foto": "" },
+                { "texto": "Escurrir bien las patatas y la cebolla del exceso de aceite e incorporarlas inmediatamente al bol con los huevos batidos.", "foto": "" },
+                { "texto": "Escurrir el líquido de las latas de atún, desmigarlo un poco e incorporarlo a la mezcla del bol. Mezclar bien y dejar reposar 2 minutos para que la patata absorba el huevo.", "foto": "" },
+                { "texto": "En una sartén antiadherente con una gota de aceite, verter la mezcla y cocinar a fuego medio durante unos 3-4 minutos.", "foto": "" },
+                { "texto": "Dar la vuelta a la tortilla con ayuda de un plato llano o un vuelca-tortillas con un movimiento firme y rápido.", "foto": "" },
+                { "texto": "Cuajar el otro lado durante 2-3 minutos adicionales dependiendo de si se prefiere más o menos hecha. Retirar y dejar reposar antes de servir.", "foto": "images/tortillapatatascebollaatun.png" }
+            ]
+        },
+        {
+            "id": 4, 
+            "titulo": "Macarrones con magro y atún gratinados", 
+            "categoria": "Pasta y otros",
+            "meta": "60 min / 2 personas", 
+            "personas": 2,
+            "imagen": "images/macarronesgratinados.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "400g de macarrones", 
+                "250g de magro de cerdo troceado pequeño", 
+                "2 latas de atún en conserva", 
+                "500g de tomate triturado o tamizado", 
+                "1 pimiento rojo", 
+                "1 cebolla blanca", 
+                "2 dientes de ajo",
+                "Queso rallado para gratinar",
+                "Aceite de oliva, sal y orégano"
+            ], 
+            "pasos": [
+                { "texto": "Poner a hervir abundante agua con sal en una olla. Cuando rompa a hervir, cocer los macarrones según el tiempo del fabricante para que queden 'al dente'.", "foto": "" },
+                { "texto": "Mientras se cuece la pasta, picar finamente la cebolla, el pimiento y los ajos.", "foto": "" },
+                { "texto": "En una sartén amplia con aceite de oliva, dorar el magro de cerdo troceado hasta que esté bien sellado.", "foto": "" },
+                { "texto": "Añadir la cebolla, el pimiento y el ajo a la sartén con el magro. Sofreír a fuego medio hasta que la verdura esté tierna.", "foto": "" },
+                { "texto": "Incorporar el tomate triturado a la sartén, añadir sal y una pizca de orégano. Dejar que el sofrito reduzca a fuego lento durante 15 minutos.", "foto": "" },
+                { "texto": "Añadir el atún bien escurrido al sofrito, mezclar durante un minuto y retirar del fuego.", "foto": "" },
+                { "texto": "Escurrir los macarrones y mezclarlos en el bol o en la propia sartén con el sofrito de magro y atún para que se impregnen bien.", "foto": "" },
+                { "texto": "Pasar los macarrones a una fuente apta para horno y encender el grill a 220 grados.", "foto": "" },
+                { "texto": "Cubrir toda la superficie con una capa generosa de queso rallado.", "foto": "" },
+                { "texto": "Introducir al horno y gratinar durante 5-8 minutos hasta que el queso esté dorado y burbujeante.", "foto": "images/macarronesgratinados.png" }
+            ]
+        },
+        {
+            "id": 5, 
+            "titulo": "Tajín de muslos de pollo con aceitunas", 
+            "categoria": "Platos marroquíes",
+            "meta": "75 min / 2 personas", 
+            "personas": 2,
+            "imagen": "images/tajinmuslodepollo.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "4 muslos de pollo (pueden ser enteros o jamoncitos)", 
+                "2 cebollas grandes", 
+                "3 patatas medianas", 
+                "2 zanahorias", 
+                "100g de aceitunas verdes sin hueso", 
+                "Especias: Cúrcuma, jengibre, pimienta negra y una pizca de canela", 
+                "Aceite de oliva y sal",
+                "Pan de hogaza o pita (para acompañar)"
+            ], 
+            "pasos": [
+                { "texto": "Preparar el marinado: En un bol pequeño, mezclar un chorro de aceite de oliva con la sal y todas las especias (cúrcuma, jengibre, pimienta y canela).", "foto": "" },
+                { "texto": "Impregnar bien los muslos de pollo con el marinado y dejarlos reposar al menos 15 minutos para que absorban el sabor.", "foto": "" },
+                { "texto": "Cortar la cebolla en juliana fina, las patatas en rodajas de un centímetro y las zanahorias en bastones o rodajas.", "foto": "" },
+                { "texto": "En la base del tajín (o una olla de barro/pesada), poner un fondo de aceite y crear una cama generosa con la cebolla picada.", "foto": "" },
+                { "texto": "Colocar sobre la cebolla las rodajas de patata y las zanahorias, formando una base sólida para el pollo.", "foto": "" },
+                { "texto": "Situar los muslos de pollo en el centro, encima de las verduras, y añadir un chorrito de agua (aprox. medio vaso) por los bordes para generar vapor.", "foto": "" },
+                { "texto": "Tapar el tajín y cocinar a fuego muy lento durante unos 45-50 minutos. Es importante no destapar mucho para que el vapor cocine el pollo.", "foto": "" },
+                { "texto": "Cuando falten 10 minutos para terminar, incorporar las aceitunas sin hueso por toda la superficie.", "foto": "" },
+                { "texto": "Retirar del fuego cuando el pollo esté tierno y la salsa haya reducido hasta quedar ligada.", "foto": "" },
+                { "texto": "Servir en el centro de la mesa. Nota: Se consume tradicionalmente con las manos, usando trozos de pan como 'cuchara' para recoger el pollo y la verdura.", "foto": "images/tajinmuslodepollo.png" }
+            ]
+        },
+        {
+            "id": 6, 
+            "titulo": "Arroz al horno (Cassola valenciana)", 
+            "categoria": "Platos valencianos",
+            "meta": "90 min / 2 personas", 
+            "personas": 2,
+            "imagen": "images/cassola.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "400g de arroz redondo", 
+                "800ml de caldo de cocido (o agua con 1 pastilla de caldo)", 
+                "250g de costillas de cerdo troceadas", 
+                "2 tiras de panceta troceada", 
+                "100g de garbanzos cocidos", 
+                "4 longanizas blancas", 
+                "2 botifarras de cebolla", 
+                "1 cabeza de ajos entera", 
+                "1 tomate grande", 
+                "1 patata mediana", 
+                "4 cucharadas de tomate triturado", 
+                "Aceite de oliva, sal y azafrán (o colorante)"
+            ], 
+            "pasos": [
+                { "texto": "Encender el horno y precalentar a 220 grados para que esté listo al meter la cazuela.", "foto": "" },
+                { "texto": "En una sartén con aceite, sofreír la cabeza de ajos entera y reservarla. Sofreír la patata cortada en láminas gruesas y reservarla también.", "foto": "" },
+                { "texto": "En el mismo aceite, dorar las costillas de cerdo y la panceta hasta que estén bien selladas. Sacar y reservar.", "foto": "" },
+                { "texto": "Sofreír ligeramente las longanizas y las botifarras (solo un minuto para que no revienten) y reservar.", "foto": "" },
+                { "texto": "Añadir el tomate triturado a la sartén con el resto del aceite y sofreír hasta que pierda el agua. Incorporar los garbanzos cocidos y el arroz, removiendo todo durante un par de minutos para nacarar el arroz.", "foto": "" },
+                { "texto": "Pasar todo el contenido de la sartén (arroz, carne, garbanzos y sofrito) a una cazuela de barro (cassola).", "foto": "" },
+                { "texto": "Añadir el caldo muy caliente (proporción doble que de arroz) y rectificar de sal y azafrán.", "foto": "" },
+                { "texto": "Decoración: Colocar la cabeza de ajos en el centro, el medio tomate en el lateral, las láminas de patata alrededor y coronar con las longanizas y botifarras.", "foto": "" },
+                { "texto": "Introducir la cazuela en el horno a 220 grados durante unos 20-25 minutos, hasta que el caldo se haya evaporado y el arroz esté seco.", "foto": "" },
+                { "texto": "Dejar reposar 5 minutos fuera del horno antes de servir para que el grano termine de asentarse.", "foto": "images/cassola.png" }
+            ]
+        },
+        {
+            "id": 7, 
+            "titulo": "Espaguetis cremosos con pollo, bacon y atún", 
+            "categoria": "Pasta y otros",
+            "meta": "35 min / 2 personas", 
+            "personas": 2,
+            "imagen": "images/espaguetisnata.png", 
+            "video": "https://www.youtube.com/embed/dQw4w9WgXcQ", 
+            "ingredientes": [
+                "400g de espaguetis", 
+                "200ml de nata para cocinar (crema de leche)", 
+                "1 pechuga de pollo cortada en tiras pequeñas", 
+                "100g de bacon ahumado en tiras", 
+                "2 latas de atún en conserva", 
+                "1 cebolla blanca pequeña", 
+                "150g de champiñones laminados", 
+                "Aceite de oliva, sal y pimienta negra"
+            ], 
+            "pasos": [
+                { "texto": "Poner a hervir abundante agua con sal. Cocer los espaguetis el tiempo indicado por el fabricante hasta que estén al dente.", "foto": "" },
+                { "texto": "Mientras tanto, picar la cebolla finamente y limpiar los champiñones laminados.", "foto": "" },
+                { "whitespace": "","texto": "En una sartén grande con un chorrito de aceite, dorar las tiras de pollo y el bacon hasta que estén crujientes. Sacar y reservar.", "foto": "" },
+                { "texto": "En la misma sartén, aprovechar la grasa del bacon para sofreír la cebolla y los champiñones hasta que doren.", "foto": "" },
+                { "texto": "Volver a incorporar el pollo y el bacon a la sartén. Añadir el atún bien escurrido y mezclar todo un minuto.", "foto": "" },
+                { "texto": "Verter la nata para cocinar sobre el sofrito y sazonar con abundante pimienta negra recién molida y una pizca de sal.", "foto": "" },
+                { "texto": "Cocinar a fuego lento durante 5 minutos para que la salsa espese y los sabores se integren bien.", "foto": "" },
+                { "texto": "Escurrir los espaguetis y añadirlos directamente a la sartén con la salsa cremosa.", "foto": "" },
+                { "texto": "Remover todo a fuego suave durante un minuto para que la pasta se empape completamente de la salsa.", "foto": "images/espaguetisnata.png" }
+            ]
+        },
         {
             "id": 8,
             "titulo": "Ensalada en tarro: El tarro balear",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_tarro_balear.png",
@@ -384,13 +432,14 @@
                 { "texto": "En un bol pequeño, diluir la cucharada de sobrasada con un chorrito de aceite de oliva caliente para formar una base de aliño integrada.", "foto": "" },
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Introducir el aliño de sobrasada y aceite.", "foto": "" },
                 { "texto": "Capa 2: Añadir la cebolla picada y el pimiento rojo sobre el aliño.", "foto": "" },
-                { "texto": "Capa 3: Incorporar los 200g de garbanzos cocidos bien limpios y escurridos.", "foto": "" },
+                { "texto": "Capa 3: Añadir los 200g de garbanzos cocidos bien limpios y escurridos.", "foto": "" },
                 { "texto": "Capa 4 (Superior): Coronar con los dados de queso manchego. Cerrar bien el tarro y refrigerar.", "foto": "" }
             ]
         },
         {
             "id": 9,
             "titulo": "Ensalada en tarro: El pescado campero",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_pescado_campero.png",
@@ -415,6 +464,7 @@
         {
             "id": 10,
             "titulo": "Ensalada en tarro: Hélices de corral",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_helices_corral.png",
@@ -439,6 +489,7 @@
         {
             "id": 11,
             "titulo": "Ensalada en tarro: Arroz tropical",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_arroz_tropical.png",
@@ -452,7 +503,7 @@
                 "Aceite de oliva, unas gotas de lima y sal"
             ],
             "pasos": [
-                { "texto": "Cocer el arroz basmati, escurrirlo bien y enfriarlo.", "foto": "" },
+                { "texto": "Cocer los arroz basmati, escurrirlo bien y enfriarlo.", "foto": "" },
                 { "texto": "Trocear el mango (o piña), el aguacate y cortar los langostinos cocidos por la mitad.", "foto": "" },
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Emulsionar el aceite con la sal y las gotas de lima.", "foto": "" },
                 { "texto": "Capa 2: Añadir los dados de mango/piña junto con el maíz dulce.", "foto": "" },
@@ -464,6 +515,7 @@
         {
             "id": 12,
             "titulo": "Ensalada en tarro: La Tex-Mex Express",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_texmex_express.png",
@@ -488,6 +540,7 @@
         {
             "id": 13,
             "titulo": "Ensalada en tarro: El capricho de cabra",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_capricho_cabra.png",
@@ -511,6 +564,7 @@
         {
             "id": 14,
             "titulo": "Ensalada en tarro: La rústica de la abuela",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_rustica_abuela.png",
@@ -533,6 +587,7 @@
         {
             "id": 15,
             "titulo": "Ensalada en tarro: El esgarraet campero",
+            "categoria": "Ensaladas",
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_esgarraet_campero.png",
@@ -555,8 +610,8 @@
         }
     ];
 
-    // --- NUEVA FUNCIÓN: PANTALLA SIEMPRE ENCENDIDA ---
     let wakeLock = null;
+    let categoriaActual = 'Todas'; // Almacena la categoría activa
 
     async function toggleWakeLock(activate) {
         if (!('wakeLock' in navigator)) return;
@@ -573,54 +628,91 @@
     }
 
     function showHome() {
-        toggleWakeLock(false); // Liberar pantalla
+        toggleWakeLock(false); 
         document.getElementById('home-view').style.display = 'grid';
         document.getElementById('recipe-detail').style.display = 'none';
         document.getElementById('search-box').style.display = 'block';
+        document.getElementById('categories-box').style.display = 'flex'; // Volver a mostrar las categorías
         document.getElementById('quick-results').style.display = 'none';
         document.getElementById('searchInput').value = '';
-        renderHome(recetas);
+        
+        // Al volver, respetamos si había un filtro seleccionado
+        aplicarFiltrosYBusqueda();
     }
 
     function renderHome(listaRecetas) {
         const homeView = document.getElementById('home-view');
+        if (listaRecetas.length === 0) {
+            homeView.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No se encontraron recetas en esta categoría.</div>';
+            return;
+        }
         homeView.innerHTML = listaRecetas.map(r => `
             <div class="recipe-card" onclick="showRecipe(${r.id})">
                 <img src="${r.imagen}" class="recipe-card-img" alt="${r.titulo}">
                 <div class="recipe-card-info">
                     <div class="meta">${r.meta}</div>
                     <h2>${r.titulo}</h2>
+                    <span class="category-tag">${r.categoria}</span>
                 </div>
             </div>
         `).join('');
     }
 
-    function filterRecipes() {
-        const input = document.getElementById('searchInput');
-        const text = input.value.toLowerCase();
-        const resultsContainer = document.getElementById('quick-results');
+    // Nueva función para gestionar el filtro por botón de categoría
+    function filterByCategory(categoria, elemento) {
+        categoriaActual = categoria;
         
-        if (text.length < 2) {
-            resultsContainer.style.display = 'none';
-            renderHome(recetas);
-            return;
+        // Cambiar la clase activa del botón
+        const botones = document.querySelectorAll('.category-btn');
+        botones.forEach(btn => btn.classList.remove('active'));
+        elemento.classList.add('active');
+
+        aplicarFiltrosYBusqueda();
+    }
+
+    function filterRecipes() {
+        // Al escribir en el buscador, actualizamos la vista cruzando datos
+        aplicarFiltrosYBusqueda();
+    }
+
+    // Centraliza la lógica para que el buscador y los botones no se pisen entre sí
+    function aplicarFiltrosYBusqueda() {
+        const textoBusqueda = document.getElementById('searchInput').value.toLowerCase();
+        const resultsContainer = document.getElementById('quick-results');
+
+        // 1. Filtrar primero por categoría
+        let filtradas = recetas;
+        if (categoriaActual !== 'Todas') {
+            filtradas = recetas.filter(r => r.categoria === categoriaActual);
         }
 
-        const filtradas = recetas.filter(r => 
-            r.titulo.toLowerCase().includes(text) || 
-            r.ingredientes.some(i => i.toLowerCase().includes(text))
-        );
+        // 2. Si hay texto en el buscador, filtrar también por texto
+        if (textoBusqueda.length >= 2) {
+            // El menú desplegable rápido busca de forma global (en todo el recetario)
+            const busquedaGlobal = recetas.filter(r => 
+                r.titulo.toLowerCase().includes(textoBusqueda) || 
+                r.ingredientes.some(i => i.toLowerCase().includes(textoBusqueda))
+            );
 
-        if (filtradas.length > 0) {
-            resultsContainer.style.display = 'block';
-            resultsContainer.innerHTML = filtradas.map(r => `
-                <div class="search-item" onclick="showRecipe(${r.id})">
-                    <strong>${r.titulo}</strong>
-                    <span style="font-size:11px; color:#999">${r.meta}</span>
-                </div>
-            `).join('');
+            if (busquedaGlobal.length > 0) {
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = busquedaGlobal.map(r => `
+                    <div class="search-item" onclick="showRecipe(${r.id})">
+                        <strong>${r.titulo}</strong>
+                        <span style="font-size:11px; color:#999">${r.meta} (${r.categoria})</span>
+                    </div>
+                `).join('');
+            } else {
+                resultsContainer.innerHTML = '<div class="search-item">No hay resultados</div>';
+            }
+
+            // En la cuadrícula principal sí cruzamos ambos filtros
+            filtradas = filtradas.filter(r => 
+                r.titulo.toLowerCase().includes(textoBusqueda) || 
+                r.ingredientes.some(i => i.toLowerCase().includes(textoBusqueda))
+            );
         } else {
-            resultsContainer.innerHTML = '<div class="search-item">No hay resultados</div>';
+            resultsContainer.style.display = 'none';
         }
 
         renderHome(filtradas);
@@ -648,23 +740,25 @@
     }
 
     function showRecipe(id) {
-        toggleWakeLock(true); // Bloquear apagado de pantalla
+        toggleWakeLock(true); 
         const recipe = recetas.find(r => r.id === id);
         const detailView = document.getElementById('recipe-detail');
         const homeView = document.getElementById('home-view');
         const searchBox = document.getElementById('search-box');
+        const categoriesBox = document.getElementById('categories-box');
         const content = document.getElementById('detail-content');
         const resultsContainer = document.getElementById('quick-results');
 
         resultsContainer.style.display = 'none';
         homeView.style.display = 'none';
         searchBox.style.display = 'none';
+        categoriesBox.style.display = 'none'; // Ocultar categorías en la vista detalle
         detailView.style.display = 'block';
 
         content.innerHTML = `
             <div class="detail-header">
                 <h2>${recipe.titulo}</h2>
-                <div class="detail-meta">${recipe.meta}</div>
+                <div class="detail-meta">${recipe.meta} | ${recipe.categoria}</div>
             </div>
 
             <div class="servings-selector">
@@ -701,7 +795,6 @@
         }
     });
 
-    // Re-activar si la pestaña vuelve a primer plano
     document.addEventListener('visibilitychange', async () => {
         if (wakeLock !== null && document.visibilityState === 'visible' && document.getElementById('recipe-detail').style.display === 'block') {
             wakeLock = await navigator.wakeLock.request('screen');
