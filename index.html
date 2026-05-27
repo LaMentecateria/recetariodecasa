@@ -126,48 +126,34 @@
 
         #recipe-detail { display: none; padding-bottom: 100px; }
         
-        /* Barra de herramientas dentro de la receta (se fija arriba al hacer scroll) */
-        .recipe-tools-bar {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
-            padding: 15px 0;
+        /* Ajustes de la barra de navegación del detalle */
+        .detail-nav-bar {
             display: flex;
-            gap: 15px;
             align-items: center;
-            justify-content: space-between;
-            z-index: 90;
-            border-bottom: 1px solid #f4f4f4;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
         }
 
         .back-btn { 
             background: var(--accent); 
             border: 1px solid var(--accent); 
-            padding: 10px 20px; 
+            padding: 10px 25px; 
             border-radius: 20px;
             cursor: pointer; 
             font-size: 13px; 
-            color: #fff; 
-            font-weight: bold;
-            transition: all 0.2s ease;
+            color: #fff;
+            transition: opacity 0.2s ease;
             outline: none;
             -webkit-appearance: none;
-            display: inline-flex;
-            align-items: center;
-            white-space: nowrap;
+            font-weight: 500;
         }
         .back-btn:hover { 
-            background: #333; 
-            border-color: #333;
+            opacity: 0.8;
         }
 
-        /* Buscador secundario dentro de la receta */
         .detail-search-container {
             position: relative;
-            flex-grow: 1;
-            max-width: 300px;
         }
 
         .detail-header h2 { font-size: 42px; font-weight: 700; margin: 0 0 10px; letter-spacing: -1px; }
@@ -214,6 +200,9 @@
             header { text-align: center; justify-content: center; padding: 40px 20px 10px 20px; }
             .search-results-list { width: calc(100vw - 40px); right: -10px; left: -10px; margin: 5px auto; }
             .categories-container { margin-bottom: 25px; padding: 0 15px; }
+            .detail-nav-bar { gap: 10px; }
+            .detail-search-container .search-input { width: 140px; }
+            .detail-search-container .search-input:focus { width: 180px; }
         }
     </style>
 </head>
@@ -232,21 +221,22 @@
 
 <div class="categories-container" id="categories-box">
     <button class="category-btn active" onclick="filterByCategory('Todas', this)">Todas</button>
-    <button class="category-btn" onclick="filterByCategory('Platos valencianos', this)">Platos valencianos</button>
-    <button class="category-btn" onclick="filterByCategory('Platos marroquíes', this)">Platos marroquíes</button>
-    <button class="category-btn" onclick="filterByCategory('Ensaladas', this)">Ensaladas</button>
+    <button class="category-btn" onclick="filterByCategory('Valencia', this)">Gastronomía valenciana</button>
+    <button class="category-btn" onclick="filterByCategory('Marruecos', this)">Gastronomía marroquí</button>
+    <button class="category-btn" onclick="filterByCategory('Ensalada', this)">Ensaladas</button>
     <button class="category-btn" onclick="filterByCategory('Picoteo', this)">Picoteo</button>
     <button class="category-btn" onclick="filterByCategory('Pasta', this)">Pasta</button>
+    <button class="category-btn" onclick="filterByCategory('Vegetariano', this)">Vegetariano</button>
 </div>
 
 <div class="container">
     <div id="home-view" class="recipe-grid-home"></div>
     <div id="recipe-detail">
-        <div class="recipe-tools-bar">
+        <div class="detail-nav-bar">
             <button class="back-btn" onclick="showHome()">← Volver</button>
-            <div class="detail-search-container">
-                <input type="text" id="detailSearchInput" class="search-input" style="width: 100%; box-sizing: border-box; font-size: 14px; padding: 8px 15px;" placeholder="Buscar otra cosa..." onkeyup="filterRecipesDetail()" autocomplete="off">
-                <div id="detail-quick-results" class="search-results-list" style="width: 100%; left: 0; right: auto;"></div>
+            <div class="detail-search-container" id="detail-search-box">
+                <input type="text" id="detailSearchInput" class="search-input" placeholder="Buscar otra receta..." onkeyup="filterRecipesDetail()" autocomplete="off">
+                <div id="detail-quick-results" class="search-results-list" style="left: 0; right: auto;"></div>
             </div>
         </div>
         <div id="detail-content"></div>
@@ -256,9 +246,9 @@
 <script>
     const recetas = [
         { 
-            "id": 1, 
+            "id": 9, 
             "titulo": "Coca de pimentó i tomaco", 
-            "categoria": ["Platos valencianos", "Picoteo"],
+            "categoria": ["Valencia", "Picoteo", "Vegetariano"],
             "meta": "190 min / 4 personas", 
             "personas": 4,
             "imagen": "images/cocapimentoitomaco.png", 
@@ -288,9 +278,9 @@
             ]
         },
         {
-            "id": 2, 
+            "id": 12, 
             "titulo": "Sobrasada vegana", 
-            "categoria": ["Picoteo"],
+            "categoria": ["Picoteo", "Vegetariano"],
             "meta": "15 min / 2 personas", 
             "personas": 2,
             "imagen": "images/sobrasada_vegana.png", 
@@ -308,11 +298,11 @@
                 { "texto": "Triturar 100g de anacardos hasta conseguir una harina, reservar", "foto": "" },
                 { "texto": "Quitar el germen del ajo y echarlo a la trituradora. Sacar los tomates del tarro y echarlos en la trituradora. Triturar hasta conseguir una pasta.", "foto": "" },
                 { "texto": "Echar una cucharadita de pimentón de la vera, una cucharadita de orégano y una cucharadita de albahaca a la harina de anacardo y mezclar bien", "foto": "" },
-                { "texto": "Incorporar la pasta de tomate seco a los anacardos y mezclar. Aprovechar el aceite de los tomates para dar una mejor textura a la sobrasada. Sal al gusto.", "foto": "" }
+                { "texto": "Incorporar la pasta de tomate seco a los anacardos y mezclar. Aprovechar el aceite de los tomates para dar una mejor textura a la sobrasada. Sal al gusto.", "foto": "images/sobrasada_vegana.png" }
             ]
         },
         {
-            "id": 3, 
+            "id": 4, 
             "titulo": "Tortilla de patatas con cebolla y atún", 
             "categoria": ["Picoteo"],
             "meta": "45 min / 3 personas", 
@@ -341,7 +331,7 @@
             ]
         },
         {
-            "id": 4, 
+            "id": 7, 
             "titulo": "Macarrones con magro y atún gratinados", 
             "categoria": ["Pasta"],
             "meta": "60 min / 2 personas", 
@@ -373,9 +363,9 @@
             ]
         },
         {
-            "id": 5, 
+            "id": 15, 
             "titulo": "Tajín de muslos de pollo con aceitunas", 
-            "categoria": ["Platos marroquíes"],
+            "categoria": ["Marruecos"],
             "meta": "75 min / 2 personas", 
             "personas": 2,
             "imagen": "images/tajinmuslodepollo.png", 
@@ -395,7 +385,7 @@
                 { "texto": "Impregnar bien los muslos de pollo con el marinado y dejarlos reposar al menos 15 minutos para que absorban el sabor.", "foto": "" },
                 { "texto": "Cortar la cebolla en juliana fina, las patatas en rodajas de un centímetro y las zanahorias en bastones o rodajas.", "foto": "" },
                 { "texto": "En la base del tajín (o una olla de barro/pesada), poner un fondo de aceite y crear una cama generosa con la cebolla picada.", "foto": "" },
-                { "texto": "Colocar sobre la cebolla las rodajas de patata y las zanahorias, formando una base sólida para el pollo.", "foto": "" },
+                { "texto": "Colocar sobre la cebolla las rodajas de patata y las zanahorias, forming una base sólida para el pollo.", "foto": "" },
                 { "texto": "Situar los muslos de pollo en el centro, encima de las verduras, y añadir un chorrito de agua (aprox. medio vaso) por los bordes para generar vapor.", "foto": "" },
                 { "texto": "Tapar el tajín y cocinar a fuego muy lento durante unos 45-50 minutos. Es importante no destapar mucho para que el vapor cocine el pollo.", "foto": "" },
                 { "texto": "Cuando falten 10 minutos para terminar, incorporar las aceitunas sin hueso por toda la superficie.", "foto": "" },
@@ -404,9 +394,9 @@
             ]
         },
         {
-            "id": 6, 
-            "titulo": "Arroz al horno (Cassola valenciana)", 
-            "categoria": ["Platos valencianos"],
+            "id": 14, 
+            "titulo": "Cassola valenciana (Arroz al horno)", 
+            "categoria": ["Valencia"],
             "meta": "90 min / 2 personas", 
             "personas": 2,
             "imagen": "images/cassola.png", 
@@ -439,7 +429,7 @@
             ]
         },
         {
-            "id": 7, 
+            "id": 2, 
             "titulo": "Espaguetis cremosos con pollo, bacon y atún", 
             "categoria": ["Pasta"],
             "meta": "35 min / 2 personas", 
@@ -469,15 +459,15 @@
             ]
         },
         {
-            "id": 8,
+            "id": 13,
             "titulo": "Ensalada en tarro: El tarro balear",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_tarro_balear.png",
             "video": "https://www.youtube.com/embed/dQw4w9WgXcQ",
             "ingredientes": [
-                "200g de garbanzos cocidos and escurridos",
+                "200g de garbanzos cocidos y escurridos",
                 "1 cucharada generosa de sobrasada",
                 "30g de queso manchego cortado en dados",
                 "0.5 pimiento rojo picado",
@@ -490,13 +480,13 @@
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Introducir el aliño de sobrasada y aceite.", "foto": "" },
                 { "texto": "Capa 2: Añadir la cebolla picada and el pimiento rojo sobre el aliño.", "foto": "" },
                 { "texto": "Capa 3: Añadir los 200g de garbanzos cocidos bien limpios y escurridos.", "foto": "" },
-                { "texto": "Capa 4 (Superior): Coronar con los dados de queso manchego. Cerrar bien el tarro y refrigerar.", "foto": "" }
+                { "texto": "Capa 4 (Superior): Coronar con los dados de queso manchego. Cerrar bien el tarro y refrigerar.", "foto": "images/ens_tarro_balear.png" }
             ]
         },
         {
-            "id": 9,
+            "id": 3,
             "titulo": "Ensalada en tarro: El pescado campero",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_pescado_campero.png",
@@ -515,13 +505,13 @@
                 { "texto": "Capa 2: Colocar los tomates cherry y las aceitunas troceadas para que absorban el aliño.", "foto": "" },
                 { "texto": "Capa 3: Añadir las alubias blancas lavadas y escurridas.", "foto": "" },
                 { "texto": "Capa 4: Incorporar el atún desmigado uniformemente.", "foto": "" },
-                { "texto": "Capa 5 (Superior): Colocar el huevo duro picado en la parte superior para evitar que se desmorone. Cerrar y guardar en frío.", "foto": "" }
+                { "texto": "Capa 5 (Superior): Colocar el huevo duro picado en la parte superior para evitar que se desmorone. Cerrar y guardar en frío.", "foto": "images/ens_pescado_campero.png" }
             ]
         },
         {
-            "id": 10,
+            "id": 11,
             "titulo": "Ensalada en tarro: Hélices de corral",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_helices_corral.png",
@@ -540,13 +530,13 @@
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Introducir el aliño base de aceite de oliva y sal.", "foto": "" },
                 { "texto": "Capa 2: Añadir los ramilletes de brócoli y las lascas de parmesano.", "foto": "" },
                 { "texto": "Capa 3: Colocar las tiras o dados de contramuslo de pollo ya fríos.", "foto": "" },
-                { "texto": "Capa 4 (Superior): Rellenar con las hélices de pasta. Cerrar herméticamente.", "foto": "" }
+                { "texto": "Capa 4 (Superior): Rellenar con las hélices de pasta. Cerrar herméticamente.", "foto": "images/ens_helices_corral.png" }
             ]
         },
         {
-            "id": 11,
+            "id": 1,
             "titulo": "Ensalada en tarro: Arroz tropical",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_arroz_tropical.png",
@@ -566,13 +556,13 @@
                 { "texto": "Capa 2: Añadir los dados de mango/piña junto con el maíz dulce.", "foto": "" },
                 { "texto": "Capa 3: Incorporar el aguacate (el contacto con la lima del fondo evitará que se oxide).", "foto": "" },
                 { "texto": "Capa 4: Colocar los langostinos troceados.", "foto": "" },
-                { "texto": "Capa 5 (Superior): Finalizar rellenando con el arroz basmati suuelto. Cerrar el tarro.", "foto": "" }
+                { "texto": "Capa 5 (Superior): Finalizar rellenando con el arroz basmati suuelto. Cerrar el tarro.", "foto": "images/ens_arroz_tropical.png" }
             ]
         },
         {
-            "id": 12,
+            "id": 8,
             "titulo": "Ensalada en tarro: La Tex-Mex Express",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_texmex_express.png",
@@ -591,13 +581,13 @@
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Colocar la base de aceite de oliva y sal.", "foto": "" },
                 { "texto": "Capa 2: Añadir el pimiento y la cebolla morada picados finamente.", "foto": "" },
                 { "texto": "Capa 3: Incorporar la carne picada salteada.", "foto": "" },
-                { "texto": "Capa 4 (Superior): Cubrir con la quinoa cocida y bien escurrida. Sellar el tarro.", "foto": "" }
+                { "texto": "Capa 4 (Superior): Cubrir con la quinoa cocida y bien escurrida. Sellar el tarro.", "foto": "images/ens_texmex_express.png" }
             ]
         },
         {
-            "id": 13,
+            "id": 6,
             "titulo": "Ensalada en tarro: El capricho de cabra",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_capricho_cabra.png",
@@ -610,18 +600,18 @@
                 "Aceite de oliva, vinagre de Módena y sal"
             ],
             "pasos": [
-                { "texto": "Hacer el contramuslo de pollo a la plancha hasta que esté bien cocinado por dentro. Cortar en tiras and dejar enfriar.", "foto": "" },
+                { "texto": "Hacer el contramuslo de pollo a la plancha hasta que esté bien cocinado por dentro. Cortar en tiras y dejar enfriar.", "foto": "" },
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Preparar la vinagreta con aceite de oliva, un toque de vinagre de Módena y sal.", "foto": "" },
                 { "texto": "Capa 2: Poner la manzana troceada para que se impregne bien con el aliño.", "foto": "" },
                 { "texto": "Capa 3: Añadir el contramuslo de pollo en tiras.", "foto": "" },
                 { "texto": "Capa 4: Repartir los trozos de nueces crujientes.", "foto": "" },
-                { "texto": "Capa 5 (Superior): Coronar desmigando el rulo de cabra por encima. Tapar y guardar.", "foto": "" }
+                { "texto": "Capa 5 (Superior): Coronar desmigando el rulo de cabra por encima. Tapar y guardar.", "foto": "images/ens_capricho_cabra.png" }
             ]
         },
         {
-            "id": 14,
+            "id": 5,
             "titulo": "Ensalada en tarro: La rústica de la abuela",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_rustica_abuela.png",
@@ -638,13 +628,13 @@
                 { "whitespace": "","texto": "Montaje en el tarro - Capa 1 (Fondo): Servir el chorro de aceite de oliva virgen extra y la sal.", "foto": "" },
                 { "texto": "Capa 2: Introducir el apio picado que aportará frescura y textura crujiente.", "foto": "" },
                 { "texto": "Capa 3: Colocar el contramuslo de pollo troceado.", "foto": "" },
-                { "texto": "Capa 4 (Superior): Verter las lentejas lavadas y escurridas en la parte superior. Cerrar bien.", "foto": "" }
+                { "texto": "Capa 4 (Superior): Verter las lentejas lavadas y escurridas en la parte superior. Cerrar bien.", "foto": "images/ens_rustica_abuela.png" }
             ]
         },
         {
-            "id": 15,
+            "id": 10,
             "titulo": "Ensalada en tarro: El esgarraet campero",
-            "categoria": ["Ensaladas"],
+            "categoria": ["Ensalada"],
             "meta": "20 min / 2 personas",
             "personas": 2,
             "imagen": "images/ens_esgarraet_campero.png",
@@ -662,7 +652,7 @@
                 { "texto": "Montaje en el tarro - Capa 1 (Fondo): Añadir el aceite con el ajo y el pimiento asado en tiras, dejando que se mezclen los jugos.", "foto": "" },
                 { "texto": "Capa 2: Incorporar las aceitunas negras (enteras o deshuesadas por la mitad).", "foto": "" },
                 { "texto": "Capa 3: Añadir el bacalao desalado bien desmigado.", "foto": "" },
-                { "texto": "Capa 4 (Superior): Terminar el tarro rellenando con los garbanzos cocidos lavados y bien secos. Tapar herméticamente.", "foto": "" }
+                { "texto": "Capa 4 (Superior): Terminar el tarro rellenando con los garbanzos cocidos lavados y bien secos. Tapar herméticamente.", "foto": "images/ens_esgarraet_campero.png" }
             ]
         }
     ];
@@ -691,7 +681,9 @@
         document.getElementById('search-box').style.display = 'block';
         document.getElementById('categories-box').style.display = 'flex'; 
         document.getElementById('quick-results').style.display = 'none';
+        document.getElementById('detail-quick-results').style.display = 'none';
         document.getElementById('searchInput').value = '';
+        document.getElementById('detailSearchInput').value = '';
         aplicarFiltrosYBusqueda();
     }
 
@@ -730,6 +722,33 @@
         aplicarFiltrosYBusqueda();
     }
 
+    /* Buscador dinámico integrado en la vista de detalle */
+    function filterRecipesDetail() {
+        const textoBusqueda = document.getElementById('detailSearchInput').value.toLowerCase();
+        const resultsContainer = document.getElementById('detail-quick-results');
+
+        if (textoBusqueda.length >= 2) {
+            const busquedaGlobal = recetas.filter(r => 
+                r.titulo.toLowerCase().includes(textoBusqueda) || 
+                r.ingredientes.some(i => i.toLowerCase().includes(textoBusqueda))
+            );
+
+            if (busquedaGlobal.length > 0) {
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = busquedaGlobal.map(r => `
+                    <div class="search-item" onclick="showRecipe(${r.id})">
+                        <strong>${r.titulo}</strong>
+                        <span style="font-size:11px; color:#999">${r.meta} (${r.categoria.join(', ')})</span>
+                    </div>
+                `).join('');
+            } else {
+                resultsContainer.innerHTML = '<div class="search-item">No hay resultados</div>';
+            }
+        } else {
+            resultsContainer.style.display = 'none';
+        }
+    }
+
     function aplicarFiltrosYBusqueda() {
         const textoBusqueda = document.getElementById('searchInput').value.toLowerCase();
         const resultsContainer = document.getElementById('quick-results');
@@ -765,37 +784,10 @@
             resultsContainer.style.display = 'none';
         }
 
-        // ORDENACIÓN AUTOMÁTICA POR ID (DE MAYOR A MENOR)
+        // 🌟 ORDENA DE MAYOR A MENOR ID (El número más alto primero, el 1 el último)
         filtradas.sort((a, b) => b.id - a.id);
 
         renderHome(filtradas);
-    }
-
-    /* 🌟 NUEVA FUNCIÓN: Lógica del buscador interno de la vista de detalle */
-    function filterRecipesDetail() {
-        const textoBusqueda = document.getElementById('detailSearchInput').value.toLowerCase();
-        const resultsContainer = document.getElementById('detail-quick-results');
-
-        if (textoBusqueda.length >= 2) {
-            const busquedaGlobal = recetas.filter(r => 
-                r.titulo.toLowerCase().includes(textoBusqueda) || 
-                r.ingredientes.some(i => i.toLowerCase().includes(textoBusqueda))
-            );
-
-            if (busquedaGlobal.length > 0) {
-                resultsContainer.style.display = 'block';
-                resultsContainer.innerHTML = busquedaGlobal.map(r => `
-                    <div class="search-item" onclick="showRecipe(${r.id})">
-                        <strong>${r.titulo}</strong>
-                        <span style="font-size:11px; color:#999">${r.meta}</span>
-                    </div>
-                `).join('');
-            } else {
-                resultsContainer.innerHTML = '<div class="search-item">No hay resultados</div>';
-            }
-        } else {
-            resultsContainer.style.display = 'none';
-        }
     }
 
     function updateQuantities(recipeId) {
@@ -828,14 +820,15 @@
         const categoriesBox = document.getElementById('categories-box');
         const content = document.getElementById('detail-content');
         const resultsContainer = document.getElementById('quick-results');
-
-        /* 🌟 LIMPIEZA AUTOMÁTICA: Resetea el buscador interno al entrar o saltar de receta */
-        if(document.getElementById('detailSearchInput')) {
-            document.getElementById('detailSearchInput').value = '';
-            document.getElementById('detail-quick-results').style.display = 'none';
-        }
+        const detailResultsContainer = document.getElementById('detail-quick-results');
 
         resultsContainer.style.display = 'none';
+        if(detailResultsContainer) detailResultsContainer.style.display = 'none';
+        
+        // Limpiamos el buscador de detalle al cambiar de receta
+        const detailInput = document.getElementById('detailSearchInput');
+        if(detailInput) detailInput.value = '';
+
         homeView.style.display = 'none';
         searchBox.style.display = 'none';
         categoriesBox.style.display = 'none'; 
@@ -875,13 +868,12 @@
         window.scrollTo(0,0);
     }
 
-    /* Ocultar listas desplegables al hacer clic fuera del área de búsqueda */
+    // Cerrar cuadros de búsqueda al hacer clic fuera de ellos
     document.addEventListener('click', function(e) {
         if (!document.getElementById('search-box').contains(e.target)) {
             document.getElementById('quick-results').style.display = 'none';
         }
-        /* 🌟 LÓGICA DE CIERRE EXTRA: Cierra los resultados del buscador interno si haces clic fuera */
-        if (!document.getElementById('recipe-detail').contains(e.target) && document.getElementById('detail-quick-results')) {
+        if (document.getElementById('detail-search-box') && !document.getElementById('detail-search-box').contains(e.target)) {
             document.getElementById('detail-quick-results').style.display = 'none';
         }
     });
@@ -892,6 +884,7 @@
         }
     });
 
+    // 🌟 SE CAMBIA EL RENDER DIRECTO POR LA FUNCIÓN PARA QUE ORDENE DESDE EL INICIO
     aplicarFiltrosYBusqueda();
 </script>
 </body>
