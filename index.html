@@ -41,6 +41,7 @@
             width: 200px;
             transition: all 0.3s;
             -webkit-appearance: none;
+            box-sizing: border-box;
         }
         .search-input:focus { width: 250px; border-color: var(--accent); }
 
@@ -128,11 +129,11 @@
         
         /* Ajustes de la barra de navegación del detalle */
         .detail-nav-bar {
+            position: relative;
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 40px;
-            flex-wrap: wrap;
         }
 
         .back-btn { 
@@ -147,13 +148,23 @@
             outline: none;
             -webkit-appearance: none;
             font-weight: 500;
+            white-space: nowrap;
         }
         .back-btn:hover { 
             opacity: 0.8;
         }
 
+        /* Modificado para que crezca y ocupe todo el espacio a la derecha */
         .detail-search-container {
             position: relative;
+            flex-grow: 1;
+        }
+        
+        .detail-search-container .search-input {
+            width: 100%;
+        }
+        .detail-search-container .search-input:focus {
+            width: 100%;
         }
 
         .detail-header h2 { font-size: 42px; font-weight: 700; margin: 0 0 10px; letter-spacing: -1px; }
@@ -200,9 +211,18 @@
             header { text-align: center; justify-content: center; padding: 40px 20px 10px 20px; }
             .search-results-list { width: calc(100vw - 40px); right: -10px; left: -10px; margin: 5px auto; }
             .categories-container { margin-bottom: 25px; padding: 0 15px; }
+            
+            /* Alineación y comportamiento adaptado de la barra y lista en móviles */
             .detail-nav-bar { gap: 10px; }
-            .detail-search-container .search-input { width: 140px; }
-            .detail-search-container .search-input:focus { width: 180px; }
+            #detail-quick-results {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin: 5px 0 0 0;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
@@ -236,7 +256,7 @@
             <button class="back-btn" onclick="showHome()">← Volver</button>
             <div class="detail-search-container" id="detail-search-box">
                 <input type="text" id="detailSearchInput" class="search-input" placeholder="Buscar otra receta..." onkeyup="filterRecipesDetail()" autocomplete="off">
-                <div id="detail-quick-results" class="search-results-list" style="left: 0; right: auto;"></div>
+                <div id="detail-quick-results" class="search-results-list"></div>
             </div>
         </div>
         <div id="detail-content"></div>
@@ -383,7 +403,7 @@
             "pasos": [
                 { "texto": "Preparar el marinado: En un bol pequeño, mezclar un chorro de aceite de oliva con la sal y todas las especias (cúrcuma, jengibre, pimienta y canela).", "foto": "" },
                 { "texto": "Impregnar bien los muslos de pollo con el marinado y dejarlos reposar al menos 15 minutos para que absorban el sabor.", "foto": "" },
-                { "texto": "Cortar la cebolla en juliana fina, las patatas en rodajas de un centímetro y las zanahorias en bastones o rodajas.", "foto": "" },
+                { "texto": "Cortar la cebolla in juliana fina, las patatas en rodajas de un centímetro y las zanahorias en bastones o rodajas.", "foto": "" },
                 { "texto": "En la base del tajín (o una olla de barro/pesada), poner un fondo de aceite y crear una cama generosa con la cebolla picada.", "foto": "" },
                 { "texto": "Colocar sobre la cebolla las rodajas de patata y las zanahorias, forming una base sólida para el pollo.", "foto": "" },
                 { "texto": "Situar los muslos de pollo en el centro, encima de las verduras, y añadir un chorrito de agua (aprox. medio vaso) por los bordes para generar vapor.", "foto": "" },
